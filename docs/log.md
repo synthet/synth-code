@@ -4,6 +4,10 @@ Append-only. One line per wiki restructure, newest under the current month.
 Format: `- YYYY-MM-DD: <verb> — <details and paths>` (verbs: `created`, `updated`, `ingested`,
 `lint-fixed`, `reorganized`).
 
+## 2026-11
+
+- 2026-11-14: updated — [architecture/fork-deltas.md](architecture/fork-deltas.md): auto-update never polls, release notes and SSH remote-server provisioning no longer touch cloud.zed.dev; extension index and docs links decoupled from the localhost `server_url` (L-017–L-020).
+
 ## 2026-08
 
 - 2026-08-17: updated — theme catalog compliance: bundled-theme attribution now reaches the shipped notice ([`assets/themes/LICENSES`](../assets/themes/LICENSES)); rewrote [`assets/themes/synthet/PROVENANCE.md`](../assets/themes/synthet/PROVENANCE.md) to 35 variants / 35 names after upstream verification; added a themes section to [architecture/fork-deltas.md](architecture/fork-deltas.md) and an attribution row to [CANONICAL_SOURCES.md](CANONICAL_SOURCES.md); corrected the last "work comes from GitHub issues" claims in fork-deltas, CANONICAL_SOURCES, and [project/00-backlog-workflow.md](project/00-backlog-workflow.md).

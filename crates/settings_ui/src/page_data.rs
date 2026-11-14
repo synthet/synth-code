@@ -471,26 +471,6 @@ fn general_page(cx: &App) -> SettingsPage {
         ]
     }
 
-    fn auto_update_section() -> [SettingsPageItem; 2] {
-        [
-            SettingsPageItem::SectionHeader("Auto Update"),
-            SettingsPageItem::SettingItem(SettingItem {
-                title: "Auto Update",
-                description: "Whether or not to automatically check for updates.",
-                field: Box::new(SettingField {
-                    organization_override: None,
-                    json_path: Some("auto_update"),
-                    pick: |settings_content| settings_content.auto_update.as_ref(),
-                    write: |settings_content, value, _| {
-                        settings_content.auto_update = value;
-                    },
-                }),
-                metadata: None,
-                files: USER,
-            }),
-        ]
-    }
-
     SettingsPage {
         title: "General",
         items: concat_sections!(
@@ -500,7 +480,7 @@ fn general_page(cx: &App) -> SettingsPage {
             workspace_restoration_section(),
             scoped_settings_section(),
             // Synth Zed: telemetry privacy toggles removed (sinks disabled).
-            auto_update_section(),
+            // Synth Zed: auto-update toggle removed (no update server; never polls).
         )
         .into(),
     }
