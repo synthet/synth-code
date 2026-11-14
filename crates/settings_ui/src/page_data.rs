@@ -8349,7 +8349,7 @@ fn ai_page(cx: &App) -> SettingsPage {
             }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "Enable Feedback",
-                description: "Show voting thumbs up/down icon buttons for feedback on agent edits.",
+                description: "Show voting thumbs up/down icon buttons for feedback on inline assistant edits.",
                 field: Box::new(SettingField {
                     organization_override: Some(|org_config| if org_config.is_agent_thread_feedback_enabled {
                         None

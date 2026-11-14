@@ -1177,8 +1177,10 @@
       // 0 is not a valid threshold.
       "threshold": "90%",
     },
-    // When enabled, show voting thumbs for feedback on agent edits.
-    "enable_feedback": true,
+    // When enabled, show voting thumbs for feedback on inline assistant edits.
+    // Synth Zed: off by default. Ratings are recorded locally only; agent
+    // thread ratings, which upstream uploads to Zed, are never shown or sent.
+    "enable_feedback": false,
     "default_profile": "write",
     "profiles": {
       "write": {

@@ -269,6 +269,67 @@ async fn test_simple_request(cx: &mut TestAppContext) {
 }
 
 #[gpui::test]
+async fn test_rating_a_prediction_sends_no_request(cx: &mut TestAppContext) {
+    // Synth Zed fork: ratings stay local. The fake client panics on any unexpected
+    // path, so an upload to `/client/feedback/edit_prediction` would fail this test.
+    let (ep_store, mut requests) = init_test_with_fake_client(cx);
+    let fs = FakeFs::new(cx.executor());
+    fs.insert_tree("/root", json!({ "foo.md": "Hello!\nHow\nBye\n" }))
+        .await;
+    let project = Project::test(fs, vec![path!("/root").as_ref()], cx).await;
+    let buffer = project
+        .update(cx, |project, cx| {
+            let path = project.find_project_path(path!("root/foo.md"), cx).unwrap();
+            project.open_buffer(path, cx)
+        })
+        .await
+        .unwrap();
+    let snapshot = buffer.read_with(cx, |buffer, _cx| buffer.snapshot());
+    let position = snapshot.anchor_before(language::Point::new(1, 3));
+
+    let prediction_task = ep_store.update(cx, |ep_store, cx| {
+        ep_store.request_prediction(
+            &project,
+            &buffer,
+            position,
+            PredictEditsRequestTrigger::Other,
+            cx,
+        )
+    });
+    let (request, respond_tx) = requests.predict.next().await.unwrap();
+    respond_tx
+        .send(model_response(
+            &request,
+            indoc! { r"
+                --- a/root/foo.md
+                +++ b/root/foo.md
+                @@ ... @@
+                 Hello!
+                -How
+                +How are you?
+                 Bye
+            "},
+        ))
+        .unwrap();
+    let prediction = prediction_task.await.unwrap().unwrap().prediction;
+
+    ep_store.update(cx, |ep_store, cx| {
+        ep_store.rate_prediction(
+            &prediction,
+            EditPredictionRating::Negative,
+            "feedback".to_string(),
+            None,
+            cx,
+        );
+    });
+    cx.run_until_parked();
+
+    ep_store.read_with(cx, |ep_store, _| {
+        assert!(ep_store.is_prediction_rated(&prediction.id));
+    });
+}
+
+#[gpui::test]
 async fn test_zeta_request_sends_settled_body_when_data_collection_is_disabled(
     cx: &mut TestAppContext,
 ) {

@@ -18,7 +18,6 @@ use agent::{
 };
 use agent_settings::UserAgentsMd;
 use agent_skills::MAX_SKILL_DESCRIPTION_LEN;
-use cloud_api_types::{SubmitAgentThreadFeedbackBody, SubmitAgentThreadFeedbackCommentsBody};
 use editor::actions::OpenExcerpts;
 use sandbox::{SandboxFsPolicy, SandboxNetPolicy, SandboxPolicy};
 
@@ -62,22 +61,16 @@ struct ThreadFeedbackState {
 }
 
 impl ThreadFeedbackState {
+    // Synth Zed fork: thread ratings are never uploaded. Upstream sends the entire conversation
+    // to cloud.zed.dev (`/client/feedback/agent_thread[_comments]`); only local UI state is kept,
+    // and the rating UI itself is hidden (see `is_thread_feedback_enabled`).
     pub fn submit(
         &mut self,
-        thread: Entity<AcpThread>,
+        _thread: Entity<AcpThread>,
         feedback: ThreadFeedback,
         window: &mut Window,
         cx: &mut App,
     ) {
-        let Some(telemetry) = thread.read(cx).connection().telemetry() else {
-            return;
-        };
-
-        let project = thread.read(cx).project().read(cx);
-        let client = project.client();
-        let user_store = project.user_store();
-        let organization = user_store.read(cx).current_organization();
-
         if self.feedback == Some(feedback) {
             return;
         }
@@ -91,75 +84,10 @@ impl ThreadFeedbackState {
                 self.comments_editor = Some(Self::build_feedback_comments_editor(window, cx));
             }
         }
-        let session_id = thread.read(cx).session_id().clone();
-        let parent_session_id = thread.read(cx).parent_session_id().cloned();
-        let agent_telemetry_id = thread.read(cx).connection().telemetry_id();
-        let task = telemetry.thread_data(&session_id, cx);
-        let rating = match feedback {
-            ThreadFeedback::Positive => "positive",
-            ThreadFeedback::Negative => "negative",
-        };
-        cx.background_spawn(async move {
-            let thread = task.await?;
-
-            client
-                .cloud_client()
-                .submit_agent_feedback(SubmitAgentThreadFeedbackBody {
-                    organization_id: organization.map(|organization| organization.id.clone()),
-                    agent: agent_telemetry_id.to_string(),
-                    session_id: session_id.to_string(),
-                    parent_session_id: parent_session_id.map(|id| id.to_string()),
-                    rating: rating.to_string(),
-                    thread,
-                })
-                .await?;
-
-            anyhow::Ok(())
-        })
-        .detach_and_log_err(cx);
     }
 
-    pub fn submit_comments(&mut self, thread: Entity<AcpThread>, cx: &mut App) {
-        let Some(telemetry) = thread.read(cx).connection().telemetry() else {
-            return;
-        };
-
-        let Some(comments) = self
-            .comments_editor
-            .as_ref()
-            .map(|editor| editor.read(cx).text(cx))
-            .filter(|text| !text.trim().is_empty())
-        else {
-            return;
-        };
-
+    pub fn submit_comments(&mut self, _thread: Entity<AcpThread>, _cx: &mut App) {
         self.comments_editor.take();
-
-        let project = thread.read(cx).project().read(cx);
-        let client = project.client();
-        let user_store = project.user_store();
-        let organization = user_store.read(cx).current_organization();
-
-        let session_id = thread.read(cx).session_id().clone();
-        let agent_telemetry_id = thread.read(cx).connection().telemetry_id();
-        let task = telemetry.thread_data(&session_id, cx);
-        cx.background_spawn(async move {
-            let thread = task.await?;
-
-            client
-                .cloud_client()
-                .submit_agent_feedback_comments(SubmitAgentThreadFeedbackCommentsBody {
-                    organization_id: organization.map(|organization| organization.id.clone()),
-                    agent: agent_telemetry_id.to_string(),
-                    session_id: session_id.to_string(),
-                    comments,
-                    thread,
-                })
-                .await?;
-
-            anyhow::Ok(())
-        })
-        .detach_and_log_err(cx);
     }
 
     pub fn clear(&mut self) {
@@ -6942,19 +6870,10 @@ impl ThreadView {
             .into_any_element()
     }
 
-    fn is_thread_feedback_enabled(&self, cx: &App) -> bool {
-        util::maybe!({
-            let project = self.thread.read(cx).project().read(cx);
-            let user_store = project.user_store();
-            if let Some(configuration) = user_store.read(cx).current_organization_configuration() {
-                if !configuration.is_agent_thread_feedback_enabled {
-                    return false;
-                }
-            }
-
-            AgentSettings::get_global(cx).enable_feedback
-                && self.thread.read(cx).connection().telemetry().is_some()
-        })
+    fn is_thread_feedback_enabled(&self, _cx: &App) -> bool {
+        // Synth Zed fork: rating a thread would send the whole conversation to the Zed team, so
+        // the thumbs buttons and `/thumbs-up` / `/thumbs-down` commands are never offered.
+        false
     }
 
     // The local slash commands the message editor should currently expose.

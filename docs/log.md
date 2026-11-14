@@ -6,6 +6,7 @@ Format: `- YYYY-MM-DD: <verb> — <details and paths>` (verbs: `created`, `updat
 
 ## 2026-11
 
+- 2026-11-14: updated — [architecture/fork-deltas.md](architecture/fork-deltas.md): agent-thread and edit-prediction feedback uploads removed (L-021).
 - 2026-11-14: updated — [architecture/fork-deltas.md](architecture/fork-deltas.md): auto-update never polls, release notes and SSH remote-server provisioning no longer touch cloud.zed.dev; extension index and docs links decoupled from the localhost `server_url` (L-017–L-020).
 
 ## 2026-08

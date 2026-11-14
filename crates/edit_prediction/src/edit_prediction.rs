@@ -5,8 +5,8 @@ use cloud_api_client::LlmApiToken;
 use cloud_api_types::{
     EditPredictionRecentFile, EditPredictionSettledKeptChars,
     MAX_EDIT_PREDICTION_SETTLED_PER_REQUEST, OrganizationId, SettledEditPrediction,
-    SettledEditPredictionSampleData, SubmitEditPredictionFeedbackBody,
-    SubmitEditPredictionSettledBatchBody, SubmitEditPredictionSettledResponse,
+    SettledEditPredictionSampleData, SubmitEditPredictionSettledBatchBody,
+    SubmitEditPredictionSettledResponse,
 };
 use cloud_llm_client::predict_edits_v3::{
     PREDICT_EDITS_MODE_HEADER_NAME, PREDICT_EDITS_REQUEST_ID_HEADER_NAME,
@@ -3290,44 +3290,14 @@ impl EditPredictionStore {
     pub fn rate_prediction(
         &mut self,
         prediction: &EditPrediction,
-        rating: EditPredictionRating,
-        feedback: String,
-        expected_output: Option<String>,
+        _rating: EditPredictionRating,
+        _feedback: String,
+        _expected_output: Option<String>,
         cx: &mut Context<Self>,
     ) {
-        let organization = self.user_store.read(cx).current_organization();
-
+        // Synth Zed fork: ratings stay local. Upstream uploads the prediction's inputs, output and
+        // feedback to cloud.zed.dev (`/client/feedback/edit_prediction`); that call is removed.
         self.rated_predictions.insert(prediction.id.clone());
-
-        cx.background_spawn({
-            let client = self.client.clone();
-            let prediction_id = prediction.id.to_string();
-            let inputs = serde_json::to_value(&prediction.inputs);
-            let output = prediction
-                .edit_preview
-                .as_unified_diff(prediction.snapshot.file(), &prediction.edits);
-            async move {
-                client
-                    .cloud_client()
-                    .submit_edit_prediction_feedback(SubmitEditPredictionFeedbackBody {
-                        organization_id: organization.map(|organization| organization.id.clone()),
-                        request_id: prediction_id,
-                        rating: match rating {
-                            EditPredictionRating::Positive => "positive".to_string(),
-                            EditPredictionRating::Negative => "negative".to_string(),
-                        },
-                        inputs: inputs?,
-                        output,
-                        expected_output,
-                        feedback,
-                    })
-                    .await?;
-
-                anyhow::Ok(())
-            }
-        })
-        .detach_and_log_err(cx);
-
         cx.notify();
     }
 }
