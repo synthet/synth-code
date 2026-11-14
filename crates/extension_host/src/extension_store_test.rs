@@ -1241,3 +1241,16 @@ fn init_test(cx: &mut TestAppContext) {
         gpui_tokio::init(cx);
     });
 }
+
+#[test]
+fn test_extensions_api_url_ignores_server_url() {
+    let url = crate::build_extensions_api_url(
+        "/extensions/updates",
+        &[("min_schema_version", "0"), ("max_schema_version", "1")],
+    )
+    .unwrap();
+    assert_eq!(
+        url.as_str(),
+        "https://api.zed.dev/extensions/updates?min_schema_version=0&max_schema_version=1"
+    );
+}

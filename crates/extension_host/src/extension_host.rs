@@ -71,6 +71,20 @@ pub use extension_settings::ExtensionSettings;
 pub const RELOAD_DEBOUNCE_DURATION: Duration = Duration::from_millis(200);
 const FS_WATCH_LATENCY: Duration = Duration::from_millis(100);
 
+/// The public extension catalog.
+///
+/// Synth Zed fork: the catalog is a free OSS index, so it is pinned here instead
+/// of being derived from `server_url`, which the fork points at a localhost
+/// placeholder (no hosted zed.dev account or collab services).
+const EXTENSIONS_API_URL: &str = "https://api.zed.dev";
+
+fn build_extensions_api_url(path: &str, query: &[(&str, &str)]) -> Result<Url> {
+    Ok(Url::parse_with_params(
+        &format!("{EXTENSIONS_API_URL}{path}"),
+        query,
+    )?)
+}
+
 /// The current extension [`SchemaVersion`] supported by Zed.
 const CURRENT_SCHEMA_VERSION: SchemaVersion = SchemaVersion(1);
 
@@ -729,7 +743,7 @@ impl ExtensionStore {
         query: &[(&str, &str)],
         cx: &mut Context<ExtensionStore>,
     ) -> Task<Result<Vec<ExtensionMetadata>>> {
-        let url = self.http_client.build_zed_api_url(path, query);
+        let url = build_extensions_api_url(path, query);
         let http_client = self.http_client.clone();
         cx.spawn(async move |_, _| {
             let mut response = http_client
@@ -891,22 +905,19 @@ impl ExtensionStore {
         let schema_versions = schema_version_range();
         let wasm_api_versions = wasm_api_version_range(ReleaseChannel::global(cx));
 
-        let Some(url) = self
-            .http_client
-            .build_zed_api_url(
-                &format!("/extensions/{extension_id}/download"),
-                &[
-                    ("min_schema_version", &schema_versions.start().to_string()),
-                    ("max_schema_version", &schema_versions.end().to_string()),
-                    (
-                        "min_wasm_api_version",
-                        &wasm_api_versions.start().to_string(),
-                    ),
-                    ("max_wasm_api_version", &wasm_api_versions.end().to_string()),
-                ],
-            )
-            .log_err()
-        else {
+        let Some(url) = build_extensions_api_url(
+            &format!("/extensions/{extension_id}/download"),
+            &[
+                ("min_schema_version", &schema_versions.start().to_string()),
+                ("max_schema_version", &schema_versions.end().to_string()),
+                (
+                    "min_wasm_api_version",
+                    &wasm_api_versions.start().to_string(),
+                ),
+                ("max_wasm_api_version", &wasm_api_versions.end().to_string()),
+            ],
+        )
+        .log_err() else {
             return;
         };
 
@@ -936,14 +947,11 @@ impl ExtensionStore {
         cx: &mut Context<Self>,
     ) -> Task<Result<()>> {
         log::info!("installing extension {extension_id} {version}");
-        let Some(url) = self
-            .http_client
-            .build_zed_api_url(
-                &format!("/extensions/{extension_id}/{version}/download"),
-                &[],
-            )
-            .log_err()
-        else {
+        let Some(url) = build_extensions_api_url(
+            &format!("/extensions/{extension_id}/{version}/download"),
+            &[],
+        )
+        .log_err() else {
             return Task::ready(Ok(()));
         };
 

@@ -11,7 +11,7 @@ use paths::remote_servers_dir;
 use release_channel::{AppCommitSha, ReleaseChannel};
 use semver::Version;
 use serde::{Deserialize, Serialize};
-use settings::{RegisterSetting, Settings, SettingsStore};
+use settings::{RegisterSetting, Settings};
 use smol::fs::File;
 use smol::{
     fs,
@@ -241,6 +241,9 @@ async fn unmount_disk_image(mount_path: &Path) {
     }
 }
 
+// Synth Zed fork: still registered so `auto_update` parses, but never read
+// outside tests because polling is never started (see `init`).
+#[allow(dead_code)]
 #[derive(Clone, Copy, Debug, RegisterSetting)]
 struct AutoUpdateSetting(bool);
 
@@ -268,36 +271,11 @@ pub fn init(client: Arc<Client>, cx: &mut App) {
     })
     .detach();
 
+    // Synth Zed fork: never poll for updates. The update feed is cloud.zed.dev, which serves
+    // upstream Zed builds (installing one would replace this fork), so the updater entity is
+    // kept only for its status and the remote-server cache, and polling is never started.
     let version = release_channel::AppVersion::global(cx);
-    let auto_updater = cx.new(|cx| {
-        let updater = AutoUpdater::new(version, client, cx);
-
-        let poll_for_updates = ReleaseChannel::try_global(cx)
-            .map(|channel| channel.poll_for_updates())
-            .unwrap_or(false);
-
-        if option_env!("ZED_UPDATE_EXPLANATION").is_none()
-            && env::var("ZED_UPDATE_EXPLANATION").is_err()
-            && poll_for_updates
-        {
-            let mut update_subscription = AutoUpdateSetting::get_global(cx)
-                .0
-                .then(|| updater.start_polling(cx));
-
-            cx.observe_global::<SettingsStore>(move |updater: &mut AutoUpdater, cx| {
-                if AutoUpdateSetting::get_global(cx).0 {
-                    if update_subscription.is_none() {
-                        update_subscription = Some(updater.start_polling(cx))
-                    }
-                } else {
-                    update_subscription.take();
-                }
-            })
-            .detach();
-        }
-
-        updater
-    });
+    let auto_updater = cx.new(|cx| AutoUpdater::new(version, client, cx));
     cx.set_global(GlobalAutoUpdate(Some(auto_updater)));
 }
 
@@ -316,43 +294,28 @@ pub fn check(_: &Check, window: &mut Window, cx: &mut App) {
         return;
     }
 
-    if !ReleaseChannel::try_global(cx)
-        .map(|channel| channel.poll_for_updates())
-        .unwrap_or(false)
-    {
-        return;
-    }
-
-    if let Some(updater) = AutoUpdater::get(cx) {
-        updater.update(cx, |updater, cx| updater.poll(UpdateCheckType::Manual, cx));
-    } else {
-        drop(window.prompt(
-            gpui::PromptLevel::Info,
-            "Could not check for updates",
-            Some("Auto-updates disabled for non-bundled app."),
-            &["OK"],
-            cx,
-        ));
-    }
+    // Synth Zed fork: there is no update server to check against.
+    drop(window.prompt(
+        gpui::PromptLevel::Info,
+        "Synth Zed does not check for updates.",
+        Some(&format!(
+            "There is no update server. Install new builds from {FORK_RELEASES_URL}."
+        )),
+        &["OK"],
+        cx,
+    ));
 }
+
+/// Synth Zed fork: release notes live with the fork's releases, not on zed.dev.
+const FORK_RELEASES_URL: &str = "https://github.com/synthet/zed/releases";
 
 pub fn release_notes_url(cx: &mut App) -> Option<String> {
     let release_channel = ReleaseChannel::try_global(cx)?;
     let url = match release_channel {
-        ReleaseChannel::Stable | ReleaseChannel::Preview => {
-            let auto_updater = AutoUpdater::get(cx)?;
-            let auto_updater = auto_updater.read(cx);
-            let mut current_version = auto_updater.current_version.clone();
-            current_version.pre = semver::Prerelease::EMPTY;
-            current_version.build = semver::BuildMetadata::EMPTY;
-            let release_channel = release_channel.dev_name();
-            let path = format!("/releases/{release_channel}/{current_version}");
-            auto_updater.client.http_client().build_url(&path)
+        ReleaseChannel::Stable | ReleaseChannel::Preview => FORK_RELEASES_URL.to_string(),
+        ReleaseChannel::Nightly | ReleaseChannel::Dev => {
+            "https://github.com/synthet/zed/commits/main/".to_string()
         }
-        ReleaseChannel::Nightly => {
-            "https://github.com/zed-industries/zed/commits/nightly/".to_string()
-        }
-        ReleaseChannel::Dev => "https://github.com/zed-industries/zed/commits/main/".to_string(),
     };
     Some(url)
 }
@@ -561,6 +524,12 @@ impl AutoUpdater {
     // If you are packaging Zed and need to override the place it downloads SSH remotes from,
     // you can override this function. You should also update get_remote_server_release_url to return
     // Ok(None).
+    //
+    // Synth Zed fork: remote servers are never downloaded from cloud.zed.dev (upstream binaries
+    // do not match this fork's build). Instead the archive for the target platform is read from
+    // the local cache, `<remote_servers_dir>/<channel>/<os>-<arch>/<version>.gz`, where a
+    // packager or the user places the `zed-remote-server` archive produced by this fork's build.
+    // It is then uploaded to the host over SSH.
     pub async fn download_remote_server_release(
         release_channel: ReleaseChannel,
         version: Option<Version>,
@@ -569,41 +538,19 @@ impl AutoUpdater {
         set_status: impl Fn(&str, &mut AsyncApp) + Send + 'static,
         cx: &mut AsyncApp,
     ) -> Result<PathBuf> {
-        let this = cx.update(|cx| {
-            cx.default_global::<GlobalAutoUpdate>()
-                .0
-                .clone()
-                .context("auto-update not initialized")
-        })?;
-
-        set_status("Fetching remote server release", cx);
-        let release = Self::get_release_asset(
-            &this,
-            release_channel,
-            version,
-            "zed-remote-server",
-            os,
-            arch,
-            cx,
-        )
-        .await?;
-
-        let servers_dir = paths::remote_servers_dir();
-        let channel_dir = servers_dir.join(release_channel.dev_name());
-        let platform_dir = channel_dir.join(format!("{}-{}", os, arch));
-        let version_path = platform_dir.join(format!("{}.gz", release.version));
-        smol::fs::create_dir_all(&platform_dir).await.ok();
-
-        let client = this.read_with(cx, |this, _| this.client.http_client());
-
-        if smol::fs::metadata(&version_path).await.is_err() {
-            log::info!(
-                "downloading zed-remote-server {os} {arch} version {}",
-                release.version
-            );
-            set_status("Downloading remote server", cx);
-            download_remote_server_binary(&version_path, release, client).await?;
-        }
+        set_status("Locating local remote server", cx);
+        let platform_dir = remote_servers_dir()
+            .join(release_channel.dev_name())
+            .join(format!("{}-{}", os, arch));
+        let version_path = local_remote_server_archive(&platform_dir, version)
+            .await
+            .with_context(|| {
+                format!(
+                    "No local zed-remote-server archive for {os}-{arch} in {platform_dir:?}. \
+                     This build does not download remote servers; place the gzipped \
+                     zed-remote-server binary from this build there as `<version>.gz`."
+                )
+            })?;
 
         if let Err(error) =
             cleanup_remote_server_cache(&platform_dir, &version_path, REMOTE_SERVER_CACHE_LIMIT)
@@ -618,25 +565,15 @@ impl AutoUpdater {
         Ok(version_path)
     }
 
+    /// Synth Zed fork: never ask the remote host to download a server from cloud.zed.dev.
     pub async fn get_remote_server_release_url(
-        channel: ReleaseChannel,
-        version: Option<Version>,
-        os: &str,
-        arch: &str,
-        cx: &mut AsyncApp,
+        _channel: ReleaseChannel,
+        _version: Option<Version>,
+        _os: &str,
+        _arch: &str,
+        _cx: &mut AsyncApp,
     ) -> Result<Option<String>> {
-        let this = cx.update(|cx| {
-            cx.default_global::<GlobalAutoUpdate>()
-                .0
-                .clone()
-                .context("auto-update not initialized")
-        })?;
-
-        let release =
-            Self::get_release_asset(&this, channel, version, "zed-remote-server", os, arch, cx)
-                .await?;
-
-        Ok(Some(release.url))
+        Ok(None)
     }
 
     async fn get_release_asset(
@@ -957,24 +894,38 @@ impl AutoUpdater {
     }
 }
 
-async fn download_remote_server_binary(
-    target_path: &PathBuf,
-    release: ReleaseAsset,
-    client: Arc<HttpClientWithUrl>,
-) -> Result<()> {
-    let temp = tempfile::Builder::new().tempfile_in(remote_servers_dir())?;
-    let mut temp_file = File::create(&temp).await?;
+/// Finds the archive for `version` in `platform_dir`, or the newest archive when no specific
+/// version is wanted (nightly).
+async fn local_remote_server_archive(
+    platform_dir: &Path,
+    version: Option<Version>,
+) -> Result<PathBuf> {
+    if let Some(mut version) = version {
+        version.pre = semver::Prerelease::EMPTY;
+        version.build = semver::BuildMetadata::EMPTY;
+        let path = platform_dir.join(format!("{version}.gz"));
+        smol::fs::metadata(&path)
+            .await
+            .with_context(|| format!("missing {path:?}"))?;
+        return Ok(path);
+    }
 
-    let mut response = client.get(&release.url, Default::default(), true).await?;
-    anyhow::ensure!(
-        response.status().is_success(),
-        "failed to download remote server release: {:?}",
-        response.status()
-    );
-    smol::io::copy(response.body_mut(), &mut temp_file).await?;
-    smol::fs::rename(&temp, &target_path).await?;
-
-    Ok(())
+    let mut newest: Option<(PathBuf, SystemTime)> = None;
+    let mut entries = smol::fs::read_dir(platform_dir).await?;
+    while let Some(entry) = entries.next().await {
+        let path = entry?.path();
+        if path.extension() != Some(OsStr::new("gz")) {
+            continue;
+        }
+        let modified = smol::fs::metadata(&path)
+            .await
+            .and_then(|metadata| metadata.modified())
+            .unwrap_or(SystemTime::UNIX_EPOCH);
+        if newest.as_ref().is_none_or(|(_, time)| modified > *time) {
+            newest = Some((path, modified));
+        }
+    }
+    newest.map(|(path, _)| path).context("no .gz archive found")
 }
 
 async fn cleanup_remote_server_cache(
@@ -1324,7 +1275,7 @@ mod tests {
     use futures::channel::oneshot;
     use gpui::TestAppContext;
     use http_client::{FakeHttpClient, Response};
-    use settings::default_settings;
+    use settings::{SettingsStore, default_settings};
     use std::{
         rc::Rc,
         sync::{
@@ -1841,6 +1792,48 @@ mod tests {
         assert_eq!(
             newer_version.unwrap(),
             Some(fetched_version.parse().unwrap())
+        );
+    }
+
+    #[test]
+    fn test_local_remote_server_archive_lookup() {
+        let dir = tempdir().unwrap();
+        let platform_dir = dir.path();
+
+        // No archives at all: both exact and newest lookups fail.
+        assert!(
+            smol::block_on(local_remote_server_archive(
+                platform_dir,
+                Some("1.2.3".parse().unwrap())
+            ))
+            .is_err()
+        );
+        assert!(smol::block_on(local_remote_server_archive(platform_dir, None)).is_err());
+
+        let older = platform_dir.join("1.2.3.gz");
+        let newer = platform_dir.join("1.2.4.gz");
+        std::fs::write(&older, b"older").unwrap();
+        std::fs::write(&newer, b"newer").unwrap();
+        std::fs::write(platform_dir.join("notes.txt"), b"ignored").unwrap();
+        std::fs::File::options()
+            .write(true)
+            .open(&older)
+            .unwrap()
+            .set_modified(SystemTime::UNIX_EPOCH + Duration::from_secs(1))
+            .unwrap();
+
+        // Pre-release and build metadata are stripped, matching the cache naming.
+        assert_eq!(
+            smol::block_on(local_remote_server_archive(
+                platform_dir,
+                Some("1.2.3-pre+abc".parse().unwrap())
+            ))
+            .unwrap(),
+            older
+        );
+        assert_eq!(
+            smol::block_on(local_remote_server_archive(platform_dir, None)).unwrap(),
+            newer
         );
     }
 }

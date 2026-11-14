@@ -36,7 +36,9 @@ v1 explicitly does **not** include: a replacement zed.dev account server, renami
 | Collab | Collab panel not loaded into dock; Collaboration settings page omitted from settings nav |
 | Auth | No silent `sign_in_with_optional_connect`; title-bar `"show_sign_in": false`; onboarding Sign In / account / trial dropped |
 | Telemetry | No `POST /telemetry/events` (`flush_events_inner` local log only; dead POST builder removed); no minidump / Sentry / Anthropic-analytics upload; defaults `diagnostics`/`metrics` **false**; privacy toggles hidden. Help → View Telemetry is **events**, not Warp’s HTTP network log. |
-| Auto-update | `"auto_update": false` (do not pull `cloud.zed.dev/releases`) |
+| Auto-update | Never polls `cloud.zed.dev/releases` (that feed serves upstream builds, which would replace the fork). `auto_update::init` creates the updater without starting polling; **Check for Updates** shows an explanatory prompt; the `auto_update` toggle is gone from Settings. |
+| Release notes | **View Release Notes** opens `github.com/synthet/zed/releases` (Stable/Preview) or the fork's commit log (Nightly/Dev); the zed.dev release-notes API is never fetched. |
+| SSH remote server | Never downloaded from `cloud.zed.dev`, on the host or locally (upstream binaries do not match this fork). The client uploads a local archive from `<remote_servers_dir>/<channel>/<os>-<arch>/<version>.gz`; place this build's gzipped `zed-remote-server` there. Nightly takes the newest archive. Dev builds still build from source (`ZED_BUILD_REMOTE_SERVER`). |
 
 There is **no** in-app Billing settings page and no Stripe/Orb in this repo — payments live on zed.dev. Client only showed plan mirroring and deep-links; those CTAs are gone.
 
@@ -45,7 +47,8 @@ There is **no** in-app Billing settings page and no Stripe/Orb in this repo — 
 - Local editor, LSP, terminal, git, debugger
 - SSH remotes (`crates/remote`, `remote_server`)
 - BYOK providers (Anthropic, OpenAI, Ollama, LM Studio, OpenRouter, Bedrock, …), Copilot Chat, ChatGPT subscription client, Mercury / Codestral edit prediction, ACP / external agents
-- Public extension index (`api.zed.dev/extensions` — free OSS catalog)
+- Public extension index (`api.zed.dev/extensions` — free OSS catalog). Pinned in `crates/extension_host` (`EXTENSIONS_API_URL`) rather than derived from `server_url`, which is the `http://localhost` placeholder (L-015).
+- Docs links point at the static `zed.dev/docs` site via `release_channel::docs_url`, also independent of `server_url`.
 - Upstream **GPL-3.0-or-later** + Apache-2.0 where marked (not a license change)
 - `crates/collab` / `collab_ui` source left in-tree for possible later self-host; unwired from default UX
 
