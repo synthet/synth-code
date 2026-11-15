@@ -116,6 +116,37 @@ compiles those outside the LTO unit - so 48 `__imp_wasm*` references bound to RV
 `with_parser` builds a `WasmStore` for every parser, so the first file parsed crashed the process.
 Fixed by [`crates/language/src/wasmtime_c_api_keepalive.rs`](../../crates/language/src/wasmtime_c_api_keepalive.rs).
 
-The 48 `LNK4217` warnings that fix emits are the good signal, not noise: they mean the definitions
-survived LTO and tree-sitter's `__imp_` references bound to them. Zero slots and no LNK4217 at all
-would mean the keepalive static was dropped again.
+The 48 `LNK4217` warnings ("locally defined symbol imported") prove nothing on their own. The
+debug link of the `language` test binary printed all 48 and still left 48 slots at the image base.
+Trust only the pointer check.
+
+Builds without LTO crash the same way, including every debug test binary that parses
+(90 of 156 `language` tests aborted). For each `LNK4217`, `rust-lld` synthesizes a local `__imp_`
+pointer, and that pointer does not keep its target alive. So `/OPT:REF` discards the definitions
+and the `#[used]` keepalive static along with them. `with_parser` now calls
+`wasmtime_c_api_keepalive::keep_alive()`, which reads the static, so any binary that can parse keeps
+the static and the 48 definitions it lists.
+
+To diagnose a crash like this, run the pointer check on the test binary, then relink only that crate
+with a linker map and compare against a link with dead-code removal turned off:
+
+```powershell
+cargo nextest list -p language --message-format json   # "binary-path" of the test binary
+python script/check-unresolved-pointers.py <test binary>
+cargo rustc -p language --lib --profile test -- -C link-arg=/MAP:target/language-test.map
+cargo rustc -p language --lib --profile test -- -C link-arg=/OPT:NOREF
+```
+
+Find the bad slot's address in the map. If the slots are `__imp_*` and the definitions themselves
+are missing from the map, and the `/OPT:NOREF` link has no bad slots, then dead-code removal dropped
+symbols that only C code references.
+
+## Lint scripts on a Windows checkout
+
+`script/check-licenses` reports "LICENSE-GPL exists but is not a symlink" when
+`core.symlinks=false`, because Git checks out the crate license symlinks as plain files. The
+repository is fine. Check the index instead: every entry should be mode `120000`.
+
+```powershell
+git ls-files -s 'crates/*/LICENSE-*'
+```
