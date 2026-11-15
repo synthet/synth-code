@@ -14,6 +14,15 @@
 //! it is dead code, so LTO removes the reference along with everything else.
 //! Taking each address in a `#[used]` static gives LLVM a live reference inside
 //! the LTO unit, so the definitions survive.
+//!
+//! Builds without LTO, such as the debug test binaries, fail the same way at
+//! link time. The C side reaches these symbols through `__imp_` pointers that
+//! the linker synthesizes for each LNK4217 warning ("locally defined symbol
+//! imported"). Those pointers do not keep their targets alive, so `/OPT:REF`
+//! discards the definitions and the static with them, and every pointer reads
+//! back as the image base. [`keep_alive`] reads the static from the code path
+//! that creates a `WasmStore`, so any binary that can parse keeps the static,
+//! and with it every definition it lists.
 
 /// Declares each symbol and stores its address, so that LTO cannot drop it.
 ///
@@ -28,6 +37,12 @@ macro_rules! keep_alive {
         #[used]
         static KEEP_WASMTIME_C_API: &[unsafe extern "C" fn()] = &[$($symbol),+];
     };
+}
+
+/// Gives the linker a live reference to the kept symbols. Call it wherever a
+/// `WasmStore` is created.
+pub(crate) fn keep_alive() {
+    std::hint::black_box(KEEP_WASMTIME_C_API);
 }
 
 keep_alive!(

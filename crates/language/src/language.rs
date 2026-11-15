@@ -136,6 +136,8 @@ where
     F: FnOnce(&mut Parser) -> R,
 {
     let mut parser = PARSERS.lock().pop().unwrap_or_else(|| {
+        #[cfg(not(target_arch = "wasm32"))]
+        wasmtime_c_api_keepalive::keep_alive();
         let mut parser = Parser::new();
         parser
             .set_wasm_store(WasmStore::new(&WASM_ENGINE).unwrap())
