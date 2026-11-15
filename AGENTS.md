@@ -46,6 +46,7 @@ See [`.agent/SAFETY.md`](.agent/SAFETY.md) and [`docs/ai-workflow/README.md`](do
 | Date | Symptom | Root cause | Fix / guard |
 |------|---------|------------|-------------|
 | 2026-08-19 | Windows taskbar icon rendered as a muddy low-resolution tile | The ICO writer saved from its 16 px frame, so Pillow emitted no larger frames; Pillow's multi-size writer also PNG-compresses small entries that Inno Setup expects as BMP32 | Generate from the full-resolution image, store sub-256 entries as BMP32 and 256 as PNG, then verify sizes and encodings |
+| 2026-11-14 | On Windows, 90 of 156 `language` debug tests aborted with `0xc0000005`, although the release build was fixed | `rust-lld`'s local `__imp_` pointers (one per `LNK4217`) don't keep their targets alive, so `/OPT:REF` dropped the wasmtime C API definitions and the `#[used]` keepalive static | `with_parser` calls `wasmtime_c_api_keepalive::keep_alive()` (PR #8). Run `script/check-unresolved-pointers.py` on test binaries too; `LNK4217` warnings don't prove the symbols survived |
 
 ## Backlog
 
