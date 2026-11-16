@@ -154,6 +154,11 @@ script/deploy-windows.ps1 -WhatIf
 
 You can also double-click `script/deploy-windows.cmd`.
 
+Both `script/deploy-windows.ps1` and the standalone installer script
+`script/bundle-windows.ps1` build the stable channel by default. Pass
+`-Channel` to the deploy script, or set `ZED_RELEASE_CHANNEL` for the
+installer script, to override it.
+
 The script replaces `Zed.exe`, `bin\zed.exe`, and
 `tools\auto_update_helper.exe`. It leaves the official uninstaller and
 Explorer Appx package in place, and reuses ConPTY / AGS DLLs already in

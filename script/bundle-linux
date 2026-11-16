@@ -45,7 +45,12 @@ done
 
 export ZED_BUNDLE=true
 
-channel=$(<crates/zed/RELEASE_CHANNEL)
+# Synth Zed ships one channel, so bundles are stable unless ZED_RELEASE_CHANNEL
+# overrides it. crates/zed/RELEASE_CHANNEL stays "dev" for `cargo run`.
+channel="${ZED_RELEASE_CHANNEL:-stable}"
+export ZED_RELEASE_CHANNEL="${channel}"
+# Read by crates/zed/build.rs to pick the window icon.
+export RELEASE_CHANNEL="${channel}"
 target_dir="${CARGO_TARGET_DIR:-target}"
 
 version="$(script/get-crate-version zed)"

@@ -56,11 +56,12 @@ if ($Help) {
     exit 0
 }
 
-Push-Location -Path crates/zed
-$channel = Get-Content "RELEASE_CHANNEL"
+# Synth Zed ships one channel, so bundles are stable unless ZED_RELEASE_CHANNEL
+# overrides it. crates/zed/RELEASE_CHANNEL stays "dev" so that `cargo run` keeps its
+# own data, credentials and instance lock.
+$channel = if ($env:ZED_RELEASE_CHANNEL) { $env:ZED_RELEASE_CHANNEL } else { "stable" }
 $env:ZED_RELEASE_CHANNEL = $channel
 $env:RELEASE_CHANNEL = $channel
-Pop-Location
 
 function CheckEnvironmentVariables {
     if(-not $env:CI) {
@@ -298,18 +299,22 @@ function BuildInstaller {
     $issFilePath = "$innoDir\zed.iss"
     switch ($channel) {
         "stable" {
-            $appId = "{{2DB0DA96-CA55-49BB-AF4F-64AF36A86712}"
+            # Synth Zed identity: none of these may match upstream Zed, or the installer
+            # would upgrade, lock against, or unregister a real Zed install.
+            $appId = "{{9643A47E-3FC1-44C0-8B73-8B8145952726}"
             $appIconName = "app-icon"
-            $appName = "Zed"
-            $appDisplayName = "Zed"
+            $appName = "Synth Zed"
+            $appDisplayName = "Synth Zed"
             $appSetupName = "Zed-$Architecture"
-            # The mutex name here should match the mutex name in crates\zed\src\zed\windows_only_instance.rs
-            $appMutex = "Zed-Stable-Instance-Mutex"
+            # The mutex name here should match app_identifier() in crates\release_channel\src\lib.rs
+            $appMutex = "SynthZed-Editor-Stable-Instance-Mutex"
             $appExeName = "Zed"
-            $regValueName = "Zed"
-            $appUserId = "ZedIndustries.Zed"
-            $appShellNameShort = "Z&ed"
-            $appAppxFullName = "ZedIndustries.Zed_1.0.0.0_neutral__japxn1gcva8rg"
+            # "<regValueName>ContextMenu" must match REG_PATH in crates\explorer_command_injector
+            $regValueName = "SynthZed"
+            $appUserId = "io.github.synthet.Zed"
+            $appShellNameShort = "Synth Z&ed"
+            # Identity Name in crates\explorer_command_injector\AppxManifest.xml; the publisher hash is unchanged
+            $appAppxFullName = "io.github.synthet.Zed_1.0.0.0_neutral__japxn1gcva8rg"
         }
         "preview" {
             $appId = "{{F70E4811-D0E2-4D88-AC99-D63752799F95}"
