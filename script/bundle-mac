@@ -48,11 +48,11 @@ done
 shift $((OPTIND-1))
 
 
-# Get release channel
-pushd crates/zed
-channel=$(<RELEASE_CHANNEL)
+# Get release channel. Synth Zed ships one channel, so bundles are stable unless
+# ZED_RELEASE_CHANNEL overrides it. crates/zed/RELEASE_CHANNEL stays "dev" so that
+# `cargo run` keeps its own data, credentials and instance lock.
+channel="${ZED_RELEASE_CHANNEL:-stable}"
 export ZED_RELEASE_CHANNEL="${channel}"
-popd
 
 export ZED_BUNDLE=true
 
