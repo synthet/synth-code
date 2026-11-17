@@ -14,6 +14,27 @@ Each release lists the upstream base it was built on.
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-11-16
+
+Upstream base: Zed 1.17.0
+
+### Changed
+
+- rust-analyzer checks only the saved file's package on save, instead of running
+  `cargo check --workspace --all-targets` across every crate. The setting is in `rust-analyzer.toml`.
+  The development docs explain how to turn off cache priming, the main cause of rust-analyzer's
+  10+ GB footprint on this workspace, in the user-level rust-analyzer config.
+
+### Fixed
+
+- `Cargo.lock` matches the workspace again, so `--locked` builds no longer fail on the
+  dependencies `auto_update_ui` dropped.
+
+### Added
+
+- For contributors: the repository now includes the synthet-code-framework agent skill library,
+  with its Cursor and Codex mirrors, and the agent-flow ticket record.
+
 ## [0.3.0] — 2026-11-16
 
 Upstream base: Zed 1.17.0
