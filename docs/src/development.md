@@ -114,6 +114,24 @@ Recordings automatically save after 60 seconds if not stopped manually.
 
 Fork-internal architecture notes for using Warp and Zed together live in [`docs/zed-warp/`](../zed-warp/README.md). That wiki is **mirrored** with Synth Warp (`D:/Projects/warp/docs/zed-warp/`) and is not shipped product documentation. See [MIRROR.md](../zed-warp/MIRROR.md).
 
+## rust-analyzer {#rust-analyzer}
+
+On this workspace, rust-analyzer can hold over 10 GB of memory, and every editor or agent session
+starts its own server. The repository's `rust-analyzer.toml` makes the on-save check cover only the
+package of the saved file (`check.workspace = false`), instead of running
+`cargo check --workspace --all-targets`.
+
+Most of the memory comes from cache priming, which indexes every crate at startup. That is a global
+setting, so a project file can't change it. To turn it off, put this in your user-level
+`rust-analyzer.toml` (`%APPDATA%\rust-analyzer\` on Windows, `~/.config/rust-analyzer/` on Linux,
+`~/Library/Application Support/rust-analyzer/` on macOS):
+
+```toml
+cachePriming.enable = false
+```
+
+rust-analyzer then indexes crates as you open them, so the first navigation into a crate is slower.
+
 ## Contributor links
 
 - [CONTRIBUTING.md](https://github.com/zed-industries/zed/blob/main/CONTRIBUTING.md)

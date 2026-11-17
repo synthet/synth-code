@@ -1,0 +1,10 @@
+# Project settings for rust-analyzer. These override client settings for every editor and agent
+# that opens this workspace, including Zed's own .zed/settings.json.
+#
+# On save, check only the package of the saved file. The default `cargo check --workspace
+# --all-targets` checks all ~230 crates on every save and holds the build lock for minutes.
+check.workspace = false
+
+# Cache priming (`cachePriming.enable`) is a global setting and is ignored here. To stop
+# rust-analyzer indexing every crate on startup, set it in your user-level rust-analyzer.toml.
+# See docs/src/development.md.
