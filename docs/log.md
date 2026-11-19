@@ -6,6 +6,7 @@ Format: `- YYYY-MM-DD: <verb> — <details and paths>` (verbs: `created`, `updat
 
 ## 2026-11
 
+- 2026-11-19: updated — [architecture/fork-deltas.md](architecture/fork-deltas.md): fork identity split from official Zed (license notice replaces Zed's ToS on the installer page, own Windows installer identity, `SynthZed` app name and `synthzed` binary, a carved-Z mark replaces the Zed logomark) (L-021–L-024).
 - 2026-11-14: updated — [architecture/fork-deltas.md](architecture/fork-deltas.md): auto-update never polls, release notes and SSH remote-server provisioning no longer touch cloud.zed.dev; extension index and docs links decoupled from the localhost `server_url` (L-017–L-020).
 
 ## 2026-08

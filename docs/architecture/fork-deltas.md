@@ -23,7 +23,7 @@ Canonical product README: [`../../README.md`](../../README.md). Hybrid constrain
 3. Kill telemetry **sinks** (not merely default-off). Contract: [telemetry.md](../technical/telemetry.md).
 4. Do **not** stub `UserStore::plan()` to Pro — that would unlock against Zed’s servers. Cloud features are unwired, not cracked.
 
-v1 explicitly does **not** include: a replacement zed.dev account server, renaming every `zed_*` crate, making hosted Zed models / Zeta work without Zed’s backend, or full trademark-clean icon replacement beyond display name / scheme / bundle IDs.
+v1 explicitly does **not** include: a replacement zed.dev account server, renaming every `zed_*` crate, or making hosted Zed models / Zeta work without Zed’s backend. The app icons, macOS document icon and in-product mark use an original "carved Z", not the Zed logomark (L-024); other Zed marks under `assets/icons/` remain.
 
 ## Removed or unwired
 
@@ -74,8 +74,12 @@ asserts the name set and that nothing but `.json` is embedded under `themes/`.
 |---------|--------|
 | Stable / main package | `io.github.synthet.Zed` |
 | Channels | `io.github.synthet.Zed-Dev`, `-Nightly`, `-Preview` |
+| App name / data folders | `SynthZed` (`paths::APP_NAME`): `%APPDATA%\SynthZed`, `%LOCALAPPDATA%\SynthZed`, `~/.config/synthzed` |
+| Editor binary | `synthzed` (`SynthZed.exe` on Windows); the CLI stays `zed` |
 | Windows mutex / pipe | `SynthZed-Editor-{Dev,Nightly,Preview,Stable}` |
-| Windows Appx Identity | `io.github.synthet.Zed` (+ Preview/Nightly) |
+| Windows installer | Own Inno `AppId` GUIDs, `SynthZed` install folder and ProgIDs, AUMID = package ID |
+| Windows Appx Identity | `io.github.synthet.Zed` (+ Preview/Nightly), Publisher `CN=Synth Zed Contributors` |
+| Installer license page | [`legal/synth-zed-notice.md`](../../legal/synth-zed-notice.md) (not Zed's ToS) |
 | URL scheme | `synthzed://` (was `zed://`) |
 | Display names | Synth Zed / Dev / Nightly / Preview |
 
