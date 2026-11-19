@@ -4,21 +4,21 @@ use gpui::{App, ClipboardItem, PromptLevel, actions};
 use system_specs::{CopySystemSpecsIntoClipboard, SystemSpecs};
 use util::ResultExt;
 use workspace::Workspace;
-use zed_actions::feedback::{EmailZed, FileBugReport, RequestFeature};
+use zed_actions::feedback::FileBugReport;
 
 actions!(
     zed,
     [
-        /// Opens the Zed repository on GitHub.
+        /// Opens the Synth Zed repository on GitHub.
         OpenZedRepo,
         /// Copies installed extensions to the clipboard for bug reports.
         CopyInstalledExtensionsIntoClipboard
     ]
 );
 
-const ZED_REPO_URL: &str = "https://github.com/zed-industries/zed";
-
-const REQUEST_FEATURE_URL: &str = "https://github.com/zed-industries/zed/discussions/new/choose";
+// Synth Zed fork: the repository link points at the fork. "Request Feature" and "Email Us"
+// opened Zed Industries' Discussions and hi@zed.dev, so their handlers are not registered.
+const ZED_REPO_URL: &str = "https://github.com/synthet/zed";
 
 fn file_bug_report_url(specs: &SystemSpecs) -> String {
     format!(
@@ -31,18 +31,6 @@ fn file_bug_report_url(specs: &SystemSpecs) -> String {
         ),
         urlencoding::encode(&specs.to_string())
     )
-}
-
-fn email_zed_url(specs: &SystemSpecs) -> String {
-    format!(
-        concat!("mailto:hi@zed.dev", "?", "body={}"),
-        email_body(specs)
-    )
-}
-
-fn email_body(specs: &SystemSpecs) -> String {
-    let body = format!("\n\nSystem Information:\n\n{}", specs);
-    urlencoding::encode(&body).to_string()
 }
 
 pub fn init(cx: &mut App) {
@@ -81,9 +69,6 @@ pub fn init(cx: &mut App) {
                     cx,
                 ));
             })
-            .register_action(|_, _: &RequestFeature, _, cx| {
-                cx.open_url(REQUEST_FEATURE_URL);
-            })
             .register_action(move |_, _: &FileBugReport, window, cx| {
                 let specs =
                     SystemSpecs::new(window, cx, telemetry::os_name(), telemetry::os_version());
@@ -91,18 +76,6 @@ pub fn init(cx: &mut App) {
                     let specs = specs.await;
                     cx.update(|_, cx| {
                         cx.open_url(&file_bug_report_url(&specs));
-                    })
-                    .log_err();
-                })
-                .detach();
-            })
-            .register_action(move |_, _: &EmailZed, window, cx| {
-                let specs =
-                    SystemSpecs::new(window, cx, telemetry::os_name(), telemetry::os_version());
-                cx.spawn_in(window, async move |_, cx| {
-                    let specs = specs.await;
-                    cx.update(|_, cx| {
-                        cx.open_url(&email_zed_url(&specs));
                     })
                     .log_err();
                 })
