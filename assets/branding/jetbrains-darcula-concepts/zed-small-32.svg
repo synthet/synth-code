@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
-  <title id="title">Zed — 24/32 px simplification</title>
-  <desc id="description">Outer ring and diagonal of the master's labyrinth, with bars widened to 96 units so they land on whole pixels at 32 px.</desc>
+  <title id="title">Synth Zed — 24/32 px simplification</title>
+  <desc id="description">The carved Z with its box widened to 208..816 and the band to 288 units so the band stays above eight pixels and the carves stay distinct at 32 px.</desc>
   <g id="foundation">
     <rect x="64" y="64" width="896" height="896" rx="184" fill="#101014"/>
   </g>
-  <g id="glyph" fill="#A9B7C6">
-      <path d="M 224,224 H 800 V 320 H 320 V 544 H 224 Z"/>
-      <path d="M 800,480 V 800 H 224 V 704 H 704 V 480 Z"/>
-      <path d="M 720,224 L 800,304 L 304,800 L 224,720 Z"/>
+  <g id="glyph" fill="#FFFFFF">
+      <path d="M 528,224 H 816 L 496,800 H 208 Z"/>
+  </g>
+  <g id="accent" fill="#1FD3F2">
+      <path d="M 248,224 L 528,224 C 416,425.6 378.24,480 208,480 L 208,264 A 40 40 0 0 1 248,224 Z"/>
+      <path d="M 776,800 L 496,800 C 608,598.4 645.76,544 816,544 L 816,760 A 40 40 0 0 1 776,800 Z"/>
   </g>
 </svg>

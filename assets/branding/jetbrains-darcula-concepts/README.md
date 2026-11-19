@@ -22,39 +22,40 @@ that defect cannot come back silently.
 | Role | Colour |
 | --- | --- |
 | Plate | `#101014` |
-| Glyph, flat (Windows, small sizes) | `#A9B7C6` |
-| Glyph highlight (macOS gradient top) | `#F8FAFC` |
+| Zed band | `#FFFFFF` |
+| Zed accent (Stable) | `#1FD3F2` |
+| Warp glyph, flat (Windows, small sizes) | `#A9B7C6` |
+| Warp glyph highlight (macOS gradient top) | `#F8FAFC` |
 | Preview channel tint | `#6897BB` |
 | Nightly channel tint | `#9876AA` |
 | Dev channel tint | `#CC7832` |
 
-Glyph colour is the only thing that varies between Zed's release channels. The
-plate and the mark stay identical across all four.
+The accent colour is the only thing that varies between Zed's release channels:
+the tints above replace `#1FD3F2`. The plate, the white band and the geometry stay
+identical across all four.
 
 ## Masters
 
-| App | macOS (silver gradient) | Windows (flat silver) |
+| App | macOS | Windows |
 | --- | --- | --- |
 | Zed | [SVG](zed-macos.svg) / [PNG](zed-macos.png) | [SVG](zed-windows.svg) / [PNG](zed-windows.png) |
 | Warp | [SVG](warp-macos.svg) / [PNG](warp-macos.png) | [SVG](warp-windows.svg) / [PNG](warp-windows.png) |
 
-Zed is the Zed logomark; Warp is the two-panel mark. They stay distinguishable in
-grayscale and at 16 px, so colour is never the differentiator.
+Synth Zed is the carved Z; Warp is the two-panel mark. They stay distinguishable
+in grayscale and at 16 px, so colour is never the differentiator.
 
-Zed's glyph is the published mark from https://zed.dev/brand, taken verbatim as
-vector geometry from [`assets/images/zed_logo.svg`](../../images/zed_logo.svg) in
-this checkout and placed with `transform="translate(240,240) scale(5.6666666667)"`,
-which maps its 96-unit box onto 240..784. The path is not redrawn, so the mark
-stays exact; only the plate under it is ours. Warp sits at 222..806, so neither
-glyph runs to the plate edge while the other has margin.
+The carved Z is a white diagonal band (a parallelogram from 552..800 at the top
+to 224..472 at the bottom of the 240..784 glyph box) with two S-curve accent
+shapes in place of the Z's bars. Each accent is bounded by the box edges and one
+cubic curve that leaves the band's corner along its edge and meets the side of
+the box horizontally. The bottom accent is the top one rotated 180 degrees.
+Warp sits at 222..806, so neither glyph runs to the plate edge while the other has
+margin.
 
-The two are *not* weight-matched, and that is a deliberate trade. Measured at
-256 px over the plate (alpha ≥ 128, glyph = R > 90), the Zed mark is 17.5% ink at
-6.69 horizontal glyph/plate transitions per scanline against Warp's 24.2% and
-3.33 — lighter and far busier. An earlier cut replaced it with two open brackets
-and one diagonal to close that gap (23.6% / 3.76, which does pair with Warp), but
-that shape is not the Zed mark. Fidelity to the published mark wins; the plate,
-palette and geometry box are what hold the family together.
+The mark does not use the Zed logomark from https://zed.dev/brand, which earlier
+versions of these masters placed verbatim. The in-product mark,
+[`assets/images/zed_logo.svg`](../../images/zed_logo.svg), is the same shape in
+one colour, with a 36-unit seam between the band and each accent.
 
 ## Small-size variants
 
@@ -63,8 +64,8 @@ geometry, so bars land on whole pixels instead of straddling them:
 
 | Source | Used for | Reduction |
 | --- | --- | --- |
-| [zed-small-32.svg](zed-small-32.svg) | Zed 24 and 32 px | Outer ring and diagonal only, bars widened to 96 units |
-| [zed-small-16.svg](zed-small-16.svg) | Zed 16 px | Ring dropped, bold Z on a 64-unit grid |
+| [zed-small-32.svg](zed-small-32.svg) | Zed 24 and 32 px | Box widened to 208..816, band to 288 units |
+| [zed-small-16.svg](zed-small-16.svg) | Zed 16 px | 64-unit grid: box 192..832, 320-unit band, square accent corners |
 | [warp-small-32.svg](warp-small-32.svg) | Warp 16, 24 and 32 px | Same panels, inter-panel gap widened |
 
 `source_for()` in `script/apply_branding_icons.py` picks between them. Renders
@@ -86,6 +87,11 @@ The comparison sheet and the 1024 px master PNGs:
 ```sh
 python assets/branding/jetbrains-darcula-concepts/build.py
 ```
+
+The macOS document icon, `crates/zed/resources/Document.icns`, renders from
+[zed-document.svg](zed-document.svg): rasterize it at 1024 px with `magick`, then save
+it with Pillow's ICNS writer (`Image.save(path, format="ICNS")`), which emits 16 to
+1024 px. Neither script produces it.
 
 Both need ImageMagick 7 with SVG support on `PATH` (verified against 7.1.2 with
 librsvg). `build.py` validates the masters, prefixes SVG IDs per sheet instance,

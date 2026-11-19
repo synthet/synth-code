@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
+  <title id="title">Synth Zed — macOS document icon</title>
+  <desc id="description">Document page in the Synth plate colour with a folded corner and the carved Z. Source for crates/zed/resources/Document.icns. All visible artwork is vector geometry.</desc>
+  <g id="page">
+    <path d="M 240,96 H 656 L 832,272 V 880 A 48 48 0 0 1 784 928 H 240 A 48 48 0 0 1 192 880 V 144 A 48 48 0 0 1 240 96 Z" fill="#101014"/>
+    <path d="M 656,96 V 224 A 48 48 0 0 0 704 272 H 832 Z" fill="#3A3A44"/>
+  </g>
+  <g transform="translate(512 584) scale(0.62) translate(-512 -512)">
+    <path d="M 552,240 H 800 L 472,784 H 224 Z" fill="#FFFFFF"/>
+    <path d="M 272,240 L 552,240 C 437.2,430.4 385.28,472 224,472 L 224,288 A 48 48 0 0 1 272,240 Z" fill="#1FD3F2"/>
+    <path d="M 752,784 L 472,784 C 586.8,593.6 638.72,552 800,552 L 800,736 A 48 48 0 0 1 752,784 Z" fill="#1FD3F2"/>
+  </g>
+</svg>

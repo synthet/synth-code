@@ -34,6 +34,8 @@ CHANNEL_TINTS = {
 
 SILVER_FILL = 'fill="url(#silver)"'
 FLAT_FILL = 'fill="#A9B7C6"'
+# Accent of the Zed carved Z; the channel tint recolours it, the white band stays.
+ACCENT_FILL = 'fill="#1FD3F2"'
 
 
 def source_for(app: str, flavour: str, size: int) -> Path:
@@ -55,6 +57,7 @@ def render_svg(source: Path, size: int, glyph_fill: str | None = None) -> Image.
     if glyph_fill:
         markup = markup.replace(SILVER_FILL, f'fill="{glyph_fill}"')
         markup = markup.replace(FLAT_FILL, f'fill="{glyph_fill}"')
+        markup = markup.replace(ACCENT_FILL, f'fill="{glyph_fill}"')
     # Rasterize at the target size rather than downscaling from 1024. Downscaling
     # smears the plate edge into the outermost pixel, which costs the 16 px
     # variant its transparent margin and makes the tile read as a solid square.
