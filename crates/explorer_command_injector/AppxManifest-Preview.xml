@@ -15,7 +15,7 @@
   <!-- TODO: Use Zed's signature here. -->
   <Identity
     Name="io.github.synthet.Zed-Preview"
-    Publisher="CN=Zed Industries Inc, O=Zed Industries Inc, L=Denver, S=Colorado, C=US"
+    Publisher="CN=Synth Zed Contributors"
     Version="1.0.0.0" />
   <Properties>
     <DisplayName>Synth Zed Preview</DisplayName>
@@ -39,13 +39,13 @@
   </Capabilities>
   <Applications>
     <Application Id="ZedPreview"
-      Executable="Zed.exe"
+      Executable="SynthZed.exe"
       uap10:TrustLevel="mediumIL"
       uap10:RuntimeBehavior="win32App">
     <!-- TODO: Use actual icon here. -->
       <uap:VisualElements
         AppListEntry="none"
-        DisplayName="Zed Preview"
+        DisplayName="Synth Zed Preview"
         Description="Zed Preview explorer command injector"
         BackgroundColor="transparent"
         Square150x150Logo="resources\logo_150x150.png"
@@ -55,20 +55,20 @@
         <desktop4:Extension Category="windows.fileExplorerContextMenus">
           <desktop4:FileExplorerContextMenus>
             <desktop5:ItemType Type="Directory">
-              <desktop5:Verb Id="OpenWithZedPreview" Clsid="af8e85ea-fb20-4db2-93cf-56513c1ec697" />
+              <desktop5:Verb Id="OpenWithZedPreview" Clsid="722171d8-47e2-4d9a-bea7-8c02e87e2895" />
             </desktop5:ItemType>
             <desktop5:ItemType Type="Directory\Background">
-              <desktop5:Verb Id="OpenWithZedPreview" Clsid="af8e85ea-fb20-4db2-93cf-56513c1ec697" />
+              <desktop5:Verb Id="OpenWithZedPreview" Clsid="722171d8-47e2-4d9a-bea7-8c02e87e2895" />
             </desktop5:ItemType>
             <desktop5:ItemType Type="*">
-              <desktop5:Verb Id="OpenWithZedPreview" Clsid="af8e85ea-fb20-4db2-93cf-56513c1ec697" />
+              <desktop5:Verb Id="OpenWithZedPreview" Clsid="722171d8-47e2-4d9a-bea7-8c02e87e2895" />
             </desktop5:ItemType>
           </desktop4:FileExplorerContextMenus>
         </desktop4:Extension>
         <com:Extension Category="windows.comServer">
           <com:ComServer>
-            <com:SurrogateServer DisplayName="Zed Preview">
-              <com:Class Id="af8e85ea-fb20-4db2-93cf-56513c1ec697" Path="zed_explorer_command_injector.dll" ThreadingModel="STA"/>
+            <com:SurrogateServer DisplayName="Synth Zed Preview">
+              <com:Class Id="722171d8-47e2-4d9a-bea7-8c02e87e2895" Path="zed_explorer_command_injector.dll" ThreadingModel="STA"/>
             </com:SurrogateServer>
           </com:ComServer>
         </com:Extension>
