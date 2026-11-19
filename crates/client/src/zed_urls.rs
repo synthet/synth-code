@@ -13,7 +13,7 @@ fn server_url(cx: &App) -> &str {
     &ClientSettings::get_global(cx).server_url
 }
 
-// Synth Zed fork: docs are the static zed.dev site, so they are not derived from `server_url`
+// Synth Code fork: docs are the static zed.dev site, so they are not derived from `server_url`
 // (a localhost placeholder in this fork, which would 404).
 fn docs_url(cx: &App) -> String {
     release_channel::docs_url("", cx)
@@ -82,10 +82,10 @@ pub fn llm_provider_docs(cx: &App) -> String {
 
 /// Returns the URL to Zed's ACP registry blog post.
 pub fn acp_registry_blog(_cx: &App) -> String {
-    // Synth Zed fork: a static zed.dev page, not derived from `server_url`.
+    // Synth Code fork: a static zed.dev page, not derived from `server_url`.
     "https://zed.dev/blog/acp-registry".to_string()
 }
 
 pub fn shared_agent_thread_url(session_id: &str) -> String {
-    format!("synthzed://agent/shared/{}", session_id)
+    format!("synthcode://agent/shared/{}", session_id)
 }

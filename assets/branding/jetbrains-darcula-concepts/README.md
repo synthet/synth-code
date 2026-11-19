@@ -22,40 +22,36 @@ that defect cannot come back silently.
 | Role | Colour |
 | --- | --- |
 | Plate | `#101014` |
-| Zed band | `#FFFFFF` |
-| Zed accent (Stable) | `#1FD3F2` |
-| Warp glyph, flat (Windows, small sizes) | `#A9B7C6` |
-| Warp glyph highlight (macOS gradient top) | `#F8FAFC` |
+| Glyph, flat (Windows, small sizes) | `#A9B7C6` |
+| Glyph highlight (macOS gradient top) | `#F8FAFC` |
 | Preview channel tint | `#6897BB` |
 | Nightly channel tint | `#9876AA` |
 | Dev channel tint | `#CC7832` |
 
-The accent colour is the only thing that varies between Zed's release channels:
-the tints above replace `#1FD3F2`. The plate, the white band and the geometry stay
-identical across all four.
+Glyph colour is the only thing that varies between Synth Code's release channels.
+The plate and the mark stay identical across all four.
 
 ## Masters
 
 | App | macOS | Windows |
 | --- | --- | --- |
-| Zed | [SVG](zed-macos.svg) / [PNG](zed-macos.png) | [SVG](zed-windows.svg) / [PNG](zed-windows.png) |
+| Synth Code | [SVG](zed-macos.svg) / [PNG](zed-macos.png) | [SVG](zed-windows.svg) / [PNG](zed-windows.png) |
 | Warp | [SVG](warp-macos.svg) / [PNG](warp-macos.png) | [SVG](warp-windows.svg) / [PNG](warp-windows.png) |
 
-Synth Zed is the carved Z; Warp is the two-panel mark. They stay distinguishable
-in grayscale and at 16 px, so colour is never the differentiator.
+Synth Code is the window mark; Warp (Synth Term) is the two-panel mark. They stay
+distinguishable in grayscale and at 16 px, so colour is never the differentiator.
 
-The carved Z is a white diagonal band (a parallelogram from 552..800 at the top
-to 224..472 at the bottom of the 240..784 glyph box) with two S-curve accent
-shapes in place of the Z's bars. Each accent is bounded by the box edges and one
-cubic curve that leaves the band's corner along its edge and meets the side of
-the box horizontally. The bottom accent is the top one rotated 180 degrees.
-Warp sits at 222..806, so neither glyph runs to the plate edge while the other has
-margin.
+The window mark is a rounded frame (204..820 by 256..768, 72 units thick, outer
+radius 80) around a code slash: two chevrons and a slash, point-symmetric about
+the plate centre. It follows the owner's reference render. The source files keep
+their `zed-*` names because `script/apply_branding_icons.py` and `build.py`
+look them up by those names. Warp sits at 222..806, so neither glyph runs to the
+plate edge while the other has margin.
 
 The mark does not use the Zed logomark from https://zed.dev/brand, which earlier
 versions of these masters placed verbatim. The in-product mark,
-[`assets/images/zed_logo.svg`](../../images/zed_logo.svg), is the same shape in
-one colour, with a 36-unit seam between the band and each accent.
+[`assets/images/zed_logo.svg`](../../images/zed_logo.svg), is the same geometry in
+one colour without the plate.
 
 ## Small-size variants
 
@@ -64,8 +60,8 @@ geometry, so bars land on whole pixels instead of straddling them:
 
 | Source | Used for | Reduction |
 | --- | --- | --- |
-| [zed-small-32.svg](zed-small-32.svg) | Zed 24 and 32 px | Box widened to 208..816, band to 288 units |
-| [zed-small-16.svg](zed-small-16.svg) | Zed 16 px | 64-unit grid: box 192..832, 320-unit band, square accent corners |
+| [zed-small-32.svg](zed-small-32.svg) | Synth Code 24 and 32 px | 96-unit frame, heavier chevrons and slash |
+| [zed-small-16.svg](zed-small-16.svg) | Synth Code 16 px | 64-unit grid: one-pixel frame, chevrons and slash, one-pixel gaps |
 | [warp-small-32.svg](warp-small-32.svg) | Warp 16, 24 and 32 px | Same panels, inter-panel gap widened |
 
 `source_for()` in `script/apply_branding_icons.py` picks between them. Renders

@@ -9,14 +9,14 @@ use zed_actions::feedback::FileBugReport;
 actions!(
     zed,
     [
-        /// Opens the Synth Zed repository on GitHub.
+        /// Opens the Synth Code repository on GitHub.
         OpenZedRepo,
         /// Copies installed extensions to the clipboard for bug reports.
         CopyInstalledExtensionsIntoClipboard
     ]
 );
 
-// Synth Zed fork: the repository link points at the fork. "Request Feature" and "Email Us"
+// Synth Code fork: the repository link points at the fork. "Request Feature" and "Email Us"
 // opened Zed Industries' Discussions and hi@zed.dev, so their handlers are not registered.
 const ZED_REPO_URL: &str = "https://github.com/synthet/zed";
 

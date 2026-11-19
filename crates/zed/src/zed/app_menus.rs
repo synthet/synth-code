@@ -302,7 +302,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                         url: "https://zed.dev/docs".into(),
                     },
                 ),
-                MenuItem::action("Synth Zed Repository", feedback::OpenZedRepo),
+                MenuItem::action("Synth Code Repository", feedback::OpenZedRepo),
             ],
         },
     ]

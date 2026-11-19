@@ -23,20 +23,20 @@ function Show-DeployWindowsHelp {
     Write-Output @"
 Usage: deploy-windows.ps1 [-NoBuild] [-Launch] [-Channel <channel>] [-Architecture <arch>] [-InstallDir <path>] [-Force] [-WhatIf] [-Help]
 
-Build Synth Zed and install it into its own per-user folder
-(%LOCALAPPDATA%\Programs\SynthZed by default), side by side with any
+Build Synth Code and install it into its own per-user folder
+(%LOCALAPPDATA%\Programs\SynthCode by default), side by side with any
 official Zed install. Official Zed's folder, processes and winget package are
 not touched.
 
 Options:
   -Build               Build before deploying (default).
   -NoBuild             Deploy the last release artifacts without building.
-  -Launch              Start SynthZed.exe after a successful deploy.
+  -Launch              Start synth-code.exe after a successful deploy.
   -Channel             Release channel compiled into the binaries (default: stable).
   -Architecture, -a    x86_64 or aarch64 (default: host architecture).
-  -InstallDir          Destination (default: %LOCALAPPDATA%\Programs\SynthZed).
-  -NoShortcut          Do not create the "Synth Zed" Start menu shortcut.
-  -Force               Deploy even into a non-empty folder without SynthZed.exe.
+  -InstallDir          Destination (default: %LOCALAPPDATA%\Programs\SynthCode).
+  -NoShortcut          Do not create the "Synth Code" Start menu shortcut.
+  -Force               Deploy even into a non-empty folder without synth-code.exe.
   -Jobs                Cargo parallel jobs (default: 2). Raise this on machines
                        with plenty of RAM; thin LTO can crash rustc otherwise.
   -WhatIf              Print actions without stopping processes or writing files.
@@ -72,11 +72,11 @@ $triple = Get-ZedWindowsTargetTriple -Arch $Architecture
 $crossCompile = $Architecture -ne $hostArch
 $repoRoot = Get-ZedRepoRoot
 if (-not $InstallDir) {
-    $InstallDir = Join-Path $env:LOCALAPPDATA "Programs\SynthZed"
+    $InstallDir = Join-Path $env:LOCALAPPDATA "Programs\SynthCode"
 }
 $InstallDir = [System.IO.Path]::GetFullPath($InstallDir)
-$zedDest = Join-Path $InstallDir "SynthZed.exe"
-$cliDest = Join-Path $InstallDir "bin\zed.exe"
+$zedDest = Join-Path $InstallDir "synth-code.exe"
+$cliDest = Join-Path $InstallDir "bin\scode.exe"
 $helperDest = Join-Path $InstallDir "tools\auto_update_helper.exe"
 
 function Get-ZedReleaseOutDir {
@@ -85,10 +85,10 @@ function Get-ZedReleaseOutDir {
     if ($crossCompile) {
         return $tripleOut
     }
-    if (Test-Path -LiteralPath (Join-Path $hostOut "synthzed.exe")) {
+    if (Test-Path -LiteralPath (Join-Path $hostOut "synth-code.exe")) {
         return $hostOut
     }
-    if (Test-Path -LiteralPath (Join-Path $tripleOut "synthzed.exe")) {
+    if (Test-Path -LiteralPath (Join-Path $tripleOut "synth-code.exe")) {
         return $tripleOut
     }
     $hostOut
@@ -100,7 +100,7 @@ function Test-ZedInstallLayout {
     if (-not (Test-Path -LiteralPath $Dir)) {
         return $true
     }
-    if (Test-Path -LiteralPath (Join-Path $Dir "SynthZed.exe")) {
+    if (Test-Path -LiteralPath (Join-Path $Dir "synth-code.exe")) {
         return $true
     }
     @(Get-ChildItem -LiteralPath $Dir -Force).Count -eq 0
@@ -134,14 +134,14 @@ function Stop-ZedProcesses {
             $_.Path -and $_.Path.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)
         })
     if ($procs.Count -eq 0) {
-        Write-Host "No running Synth Zed process."
+        Write-Host "No running Synth Code process."
         return
     }
     $ids = ($procs | ForEach-Object { $_.Id }) -join ", "
-    if (-not $PSCmdlet.ShouldProcess("Synth Zed processes ($ids)", "Stop")) {
+    if (-not $PSCmdlet.ShouldProcess("Synth Code processes ($ids)", "Stop")) {
         return
     }
-    Write-Host "Stopping Synth Zed processes: $ids"
+    Write-Host "Stopping Synth Code processes: $ids"
     $procs | Stop-Process -Force
 }
 
@@ -217,7 +217,7 @@ function Copy-ZedRuntimeFiles {
 
 function New-ZedStartMenuShortcut {
     $programs = [Environment]::GetFolderPath("Programs")
-    $link = Join-Path $programs "Synth Zed.lnk"
+    $link = Join-Path $programs "Synth Code.lnk"
     if (Test-Path -LiteralPath $link) {
         Write-Host "Start menu shortcut already exists at $link"
         return
@@ -280,7 +280,7 @@ Set-Location $repoRoot
 Initialize-ZedCargoPath
 
 if (-not $Force -and -not (Test-ZedInstallLayout -Dir $InstallDir)) {
-    throw "$InstallDir is not empty and has no SynthZed.exe. Pass -Force to deploy anyway, or -InstallDir to choose another folder."
+    throw "$InstallDir is not empty and has no synth-code.exe. Pass -Force to deploy anyway, or -InstallDir to choose another folder."
 }
 
 Write-Host "Deploy"
@@ -304,13 +304,13 @@ if ($shouldBuild) {
 }
 
 $outDir = Get-ZedReleaseOutDir
-$zedSrc = Join-Path $outDir "synthzed.exe"
+$zedSrc = Join-Path $outDir "synth-code.exe"
 $cliSrc = Join-Path $outDir "cli.exe"
 $helperSrc = Join-Path $outDir "auto_update_helper.exe"
 
 $missing = @()
 foreach ($pair in @(
-        @{ Name = "synthzed.exe"; Path = $zedSrc },
+        @{ Name = "synth-code.exe"; Path = $zedSrc },
         @{ Name = "cli.exe"; Path = $cliSrc },
         @{ Name = "auto_update_helper.exe"; Path = $helperSrc }
     )) {

@@ -278,11 +278,11 @@ impl Onboarding {
     }
 
     fn handle_sign_in(&mut self, _: &SignIn, _: &mut Window, _: &mut Context<Self>) {
-        // Synth Zed: local-first — ignore sign-in actions.
+        // Synth Code: local-first — ignore sign-in actions.
     }
 
     fn handle_open_account(_: &OpenAccount, _: &mut Window, _: &mut App) {
-        // Synth Zed: no zed.dev account page.
+        // Synth Code: no zed.dev account page.
     }
 
     fn render_page(&mut self, cx: &mut Context<Self>) -> AnyElement {

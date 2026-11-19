@@ -1,1 +1,1 @@
-//! Stub: no Spectre link-search required for local Synth Zed builds.
+//! Stub: no Spectre link-search required for local Synth Code builds.

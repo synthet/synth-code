@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
-  <title id="title">Synth Zed — Windows icon</title>
-  <desc id="description">Synth fork icon family. Flat near-black plate, transparent surround. The mark is the Synth Zed carved Z: a white diagonal band with two accent-coloured S-curve carves in place of the bars. The accent (#1FD3F2 on Stable) is the only element the channel tint recolours. All visible artwork is vector geometry.</desc>
+  <title id="title">Synth Code — Windows icon</title>
+  <desc id="description">Synth fork icon family. Flat near-black plate, silver glyph, transparent surround. The mark is the Synth Code window: a rounded frame around a code slash, &lt;/&gt;, drawn as vector geometry. The channel tint recolours the whole glyph. All visible artwork is vector geometry.</desc>
   <g id="foundation">
     <rect x="64" y="64" width="896" height="896" rx="184" fill="#101014"/>
   </g>
-  <g id="glyph" fill="#FFFFFF">
-      <path d="M 552,240 H 800 L 472,784 H 224 Z"/>
-  </g>
-  <g id="accent" fill="#1FD3F2">
-      <path d="M 272,240 L 552,240 C 437.2,430.4 385.28,472 224,472 L 224,288 A 48 48 0 0 1 272,240 Z"/>
-      <path d="M 752,784 L 472,784 C 586.8,593.6 638.72,552 800,552 L 800,736 A 48 48 0 0 1 752,784 Z"/>
+  <g id="glyph" fill="#A9B7C6">
+      <path fill-rule="evenodd" d="M 284,256 H 740 A 80 80 0 0 1 820 336 V 688 A 80 80 0 0 1 740 768 H 284 A 80 80 0 0 1 204 688 V 336 A 80 80 0 0 1 284 256 Z M 304,328 H 720 A 28 28 0 0 1 748 356 V 668 A 28 28 0 0 1 720 696 H 304 A 28 28 0 0 1 276 668 V 356 A 28 28 0 0 1 304 328 Z"/>
+      <path d="M 382,422 L 440,422 L 362,512 L 440,602 L 382,602 L 304,512 Z"/>
+      <path d="M 642,602 L 584,602 L 662,512 L 584,422 L 642,422 L 720,512 Z"/>
+      <path d="M 534,396 H 578 L 490,628 H 446 Z"/>
   </g>
 </svg>

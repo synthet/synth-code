@@ -3,7 +3,7 @@
 Visual inventory of icons in this checkout. **Shipped Zed app icons** under
 `crates/zed/resources/` are rendered from the vector masters in
 `assets/branding/jetbrains-darcula-concepts/` — a flat `#101014` plate with the
-carved Z (regenerate with
+Synth Code window mark (regenerate with
 `uv run --with pillow python script/apply_branding_icons.py --zed-only`).
 Validate all Windows icon sizes with
 `uv run --with pillow python script/apply_branding_icons.py --check`.
@@ -19,7 +19,7 @@ The two PNGs below are generated previews, not sources.
 
 <table>
 <tr>
-<td align="center"><img src="branding/synth-zed-app-icon.png" width="160"><br><b>Synth Zed</b></td>
+<td align="center"><img src="branding/synth-zed-app-icon.png" width="160"><br><b>Synth Code</b></td>
 <td align="center"><img src="branding/synth-warp-app-icon.png" width="160"><br><b>Synth Warp</b></td>
 </tr>
 </table>
@@ -27,7 +27,7 @@ The two PNGs below are generated previews, not sources.
 ## App icons
 
 OS / installer / About-window art. All generated — edit the SVG masters, not these files. Channels
-share one plate and one mark; only the accent tint differs (preview `#6897BB`, nightly `#9876AA`,
+share one plate and one mark; only the glyph tint differs (preview `#6897BB`, nightly `#9876AA`,
 dev `#CC7832`).
 
 | Channel | 512 (`app-icon*.png`) | 1024 (`@2x`) | Windows ICO |
@@ -52,10 +52,10 @@ Paths are under `crates/zed/resources/`. Wired from `crates/zed/Cargo.toml` (`pa
 | `images/zed_logo.svg` | <span style="display:inline-block;background:#fff;padding:8px;border-radius:4px"><img src="images/zed_logo.svg" alt="zed_logo" width="64"></span> |
 | `images/zed_x_copilot.svg` | <span style="display:inline-block;background:#fff;padding:8px;border-radius:4px"><img src="images/zed_x_copilot.svg" alt="zed_x_copilot" width="64"></span> |
 
-`images/zed_logo.svg` is the Synth Zed in-product mark (96×96): the carved Z in one colour, with a
-seam between the band and the two S-curve accents. The file name is kept because
-`VectorName::ZedLogo` resolves to it. The OS app icons use the same geometry, drawn in the branding
-masters with a white band and a cyan accent. Neither uses the Zed logomark.
+`images/zed_logo.svg` is the Synth Code in-product mark (96×96): the window mark (a rounded frame
+around `</>`) in one colour. The file name is kept because `VectorName::ZedLogo` resolves to it. The
+OS app icons use the same geometry on the near-black plate, drawn in the branding masters. Neither
+uses the Zed logomark.
 
 ## UI icons
 

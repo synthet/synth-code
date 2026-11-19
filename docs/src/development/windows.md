@@ -143,7 +143,7 @@ cargo test --workspace
 
 Use `cargo run` or `script/build-windows.ps1` for the inner development
 loop. To install a release build into its own per-user folder,
-`%LOCALAPPDATA%\Programs\SynthZed`, side by side with any official Zed:
+`%LOCALAPPDATA%\Programs\SynthCode`, side by side with any official Zed:
 
 ```powershell
 script/deploy-windows.ps1
@@ -154,15 +154,16 @@ script/deploy-windows.ps1 -WhatIf
 
 You can also double-click `script/deploy-windows.cmd`.
 
-The script copies `SynthZed.exe`, `bin\zed.exe` (the CLI) and
-`tools\auto_update_helper.exe`, and creates a "Synth Zed" Start menu
+The script copies `synth-code.exe`, `bin\scode.exe` (the CLI) and
+`tools\auto_update_helper.exe`, and creates a "Synth Code" Start menu
 shortcut unless you pass `-NoShortcut`. When the folder lacks the ConPTY /
 AGS runtime files, it copies them from `%LOCALAPPDATA%\Programs\Zed`.
-It only stops Synth Zed processes started from its own folder, and it
+It only stops Synth Code processes started from its own folder, and it
 doesn't touch official Zed's folder or winget package.
 
-Synth Zed keeps its settings in `%APPDATA%\SynthZed` and its data in
-`%LOCALAPPDATA%\SynthZed`, apart from official Zed's `Zed` folders. It
+Synth Code keeps its settings in `%APPDATA%\SynthCode` and its data in
+`%LOCALAPPDATA%\SynthCode`, apart from official Zed's `Zed` folders; on first
+launch it moves any `SynthZed` folders from earlier builds there. It
 doesn't add `bin` to `PATH` or register file associations; the installer
 built by `script/bundle-windows.ps1` does.
 

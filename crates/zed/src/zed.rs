@@ -418,7 +418,7 @@ pub fn build_window_options(display_uuid: Option<Uuid>, cx: &mut App) -> WindowO
             height: px(240.0),
         }),
         tabbing_identifier: if use_system_window_tabs {
-            Some(String::from("synthzed"))
+            Some(String::from("synthcode"))
         } else {
             None
         },
@@ -1264,7 +1264,7 @@ fn register_actions(
                         Toast::new(
                             NotificationId::unique::<RegisterZedScheme>(),
                             format!(
-                                "synthzed:// links will now open in {}.",
+                                "synthcode:// links will now open in {}.",
                                 ReleaseChannel::global(cx).display_name()
                             ),
                         ),
@@ -1274,7 +1274,7 @@ fn register_actions(
                 Ok(())
             })
             .detach_and_prompt_err(
-                "Error registering synthzed:// scheme",
+                "Error registering synthcode:// scheme",
                 window,
                 cx,
                 |_, _, _| None,

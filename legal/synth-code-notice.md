@@ -1,10 +1,10 @@
-# Synth Zed License Notice
+# Synth Code License Notice
 
-Synth Zed is an unofficial fork of the Zed editor, maintained at
+Synth Code is an unofficial fork of the Zed editor, maintained at
 <https://github.com/synthet/zed>. It is not made, endorsed or supported by
 Zed Industries, Inc. "Zed" is a trademark of Zed Industries, Inc.
 
-Synth Zed is free software. You do not have to accept this notice to install,
+Synth Code is free software. You do not have to accept this notice to install,
 run, study, change or share the program. It tells you which licenses apply.
 
 ## Licenses
@@ -33,7 +33,7 @@ that license.
 
 ## Online services
 
-Synth Zed does not connect to the hosted accounts, AI, collaboration,
+Synth Code does not connect to the hosted accounts, AI, collaboration,
 telemetry or update services of Zed Industries. Some features reach services
 run by others, and those services have their own terms. Examples are the public
 extension index operated by Zed Industries, and the AI providers, language

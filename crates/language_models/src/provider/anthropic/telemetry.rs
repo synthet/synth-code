@@ -99,6 +99,6 @@ async fn send_anthropic_event(
     _client: Arc<dyn HttpClient>,
     _api_key: String,
 ) -> anyhow::Result<()> {
-    // Synth Zed: do not send Anthropic telemetry.
+    // Synth Code: do not send Anthropic telemetry.
     Ok(())
 }

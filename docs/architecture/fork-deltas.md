@@ -1,7 +1,7 @@
 ---
 type: Technical Reference
 title: Fork Deltas
-description: What Synth Zed removes or keeps relative to upstream Zed (commercial-free, local-first).
+description: What Synth Code removes or keeps relative to upstream Zed (commercial-free, local-first).
 resource: architecture/fork-deltas.md
 tags: [docs, architecture, fork, synth-zed]
 timestamp: 2026-08-17T00:00:00Z
@@ -12,7 +12,7 @@ okf_version: 0.1
 
 Parent: [architecture/INDEX.md](INDEX.md) · Overview: [system-overview.md](system-overview.md)
 
-**Synth Zed** is a local-first, commercial-free fork of [synthet/zed](https://github.com/synthet/zed) (upstream [zed-industries/zed](https://github.com/zed-industries/zed)). Checkout: `D:/Projects/zed`. Display name **Synth Zed**. Main package ID **`io.github.synthet.Zed`** (from [synthet.github.io](https://synthet.github.io/); not `synth.dev`, not `dev.zed.Zed`).
+**Synth Code** is a local-first, commercial-free fork of [synthet/zed](https://github.com/synthet/zed) (upstream [zed-industries/zed](https://github.com/zed-industries/zed)). Checkout: `D:/Projects/zed`. Display name **Synth Code**. Main package ID **`io.github.synthet.code`** (from [synthet.github.io](https://synthet.github.io/); not `synth.dev`, not `dev.zed.Zed`).
 
 Canonical product README: [`../../README.md`](../../README.md). Hybrid constraints (both forks): [zed-warp/constraints/synth-fork.md](../zed-warp/constraints/synth-fork.md).
 
@@ -23,7 +23,7 @@ Canonical product README: [`../../README.md`](../../README.md). Hybrid constrain
 3. Kill telemetry **sinks** (not merely default-off). Contract: [telemetry.md](../technical/telemetry.md).
 4. Do **not** stub `UserStore::plan()` to Pro — that would unlock against Zed’s servers. Cloud features are unwired, not cracked.
 
-v1 explicitly does **not** include: a replacement zed.dev account server, renaming every `zed_*` crate, or making hosted Zed models / Zeta work without Zed’s backend. The app icons, macOS document icon and in-product mark use an original "carved Z", not the Zed logomark (L-024); other Zed marks under `assets/icons/` remain.
+v1 explicitly does **not** include: a replacement zed.dev account server, renaming every `zed_*` crate, or making hosted Zed models / Zeta work without Zed’s backend. The app icons, macOS document icon and in-product mark use an original window mark (a rounded frame around `</>`), not the Zed logomark (L-024, L-026); other Zed marks under `assets/icons/` remain.
 
 ## Removed or unwired
 
@@ -72,16 +72,16 @@ asserts the name set and that nothing but `.json` is embedded under `themes/`.
 
 | Surface | Value |
 |---------|--------|
-| Stable / main package | `io.github.synthet.Zed` |
-| Channels | `io.github.synthet.Zed-Dev`, `-Nightly`, `-Preview` |
-| App name / data folders | `SynthZed` (`paths::APP_NAME`): `%APPDATA%\SynthZed`, `%LOCALAPPDATA%\SynthZed`, `~/.config/synthzed` |
-| Editor binary | `synthzed` (`SynthZed.exe` on Windows); the CLI stays `zed` |
-| Windows mutex / pipe | `SynthZed-Editor-{Dev,Nightly,Preview,Stable}` |
-| Windows installer | Own Inno `AppId` GUIDs, `SynthZed` install folder and ProgIDs, AUMID = package ID |
-| Windows Appx Identity | `io.github.synthet.Zed` (+ Preview/Nightly), Publisher `CN=Synth Zed Contributors` |
-| Installer license page | [`legal/synth-zed-notice.md`](../../legal/synth-zed-notice.md) (not Zed's ToS) |
-| URL scheme | `synthzed://` (was `zed://`) |
-| Display names | Synth Zed / Dev / Nightly / Preview |
+| Stable / main package | `io.github.synthet.code` |
+| Channels | `io.github.synthet.code-dev`, `-nightly`, `-preview` |
+| App name / data folders | `SynthCode` (`paths::APP_NAME`): `%APPDATA%\SynthCode`, `%LOCALAPPDATA%\SynthCode`, `~/.config/synthcode`; renamed from `SynthZed`/`synthzed` on first launch |
+| Editor binary / CLI | `synth-code` (`synth-code.exe` on Windows) / `scode` |
+| Windows mutex / pipe | `SynthCode-Editor-{Dev,Nightly,Preview,Stable}` |
+| Windows installer | Own Inno `AppId` GUIDs, `SynthCode` install folder and ProgIDs, AUMID = package ID |
+| Windows Appx Identity | `io.github.synthet.code` (+ Preview/Nightly), Publisher `CN=Synth Code Contributors` |
+| Installer license page | [`legal/synth-code-notice.md`](../../legal/synth-code-notice.md) (not Zed's ToS) |
+| URL scheme | `synthcode://` and `synthcode-cli://` (was `zed://`, then `synthzed://`) |
+| Display names | Synth Code / Dev / Nightly / Preview (was Synth Zed) |
 
 Sources: [`crates/release_channel/src/lib.rs`](../../crates/release_channel/src/lib.rs), [`crates/zed/Cargo.toml`](../../crates/zed/Cargo.toml) bundle metadata, [`assets/settings/default.json`](../../assets/settings/default.json).
 

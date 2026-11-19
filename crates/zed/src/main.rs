@@ -6,13 +6,36 @@ mod zed;
 
 // Ensure the binary name stays in sync with APP_NAME so that the paths used
 // at runtime (data dir, config dir, etc.) match what the binary is called.
+// Synth Code fork: the binary is `synth-code` while the folders are `SynthCode`, so hyphens are
+// ignored in the comparison.
 const _: () = assert!(
-    paths::APP_NAME_LOWERCASE
-        .as_bytes()
-        .eq_ignore_ascii_case(env!("CARGO_BIN_NAME").as_bytes()),
+    eq_ignoring_case_and_hyphens(
+        paths::APP_NAME_LOWERCASE.as_bytes(),
+        env!("CARGO_BIN_NAME").as_bytes()
+    ),
     "paths::APP_NAME_LOWERCASE must match the binary name. \
      Forks: update APP_NAME in crates/paths/src/paths.rs when renaming the binary.",
 );
+
+const fn eq_ignoring_case_and_hyphens(a: &[u8], b: &[u8]) -> bool {
+    let (mut i, mut j) = (0, 0);
+    loop {
+        while i < a.len() && a[i] == b'-' {
+            i += 1;
+        }
+        while j < b.len() && b[j] == b'-' {
+            j += 1;
+        }
+        if i == a.len() || j == b.len() {
+            return i == a.len() && j == b.len();
+        }
+        if a[i].to_ascii_lowercase() != b[j].to_ascii_lowercase() {
+            return false;
+        }
+        i += 1;
+        j += 1;
+    }
+}
 
 use agent_ui::AgentPanel;
 use anyhow::{Context as _, Result};
@@ -284,6 +307,9 @@ fn main() {
         }
     }
 
+    // Synth Code fork: move folders left by the earlier "SynthZed" name before init_paths
+    // creates the new ones.
+    let legacy_dir_migration = paths::migrate_legacy_app_dirs();
     let file_errors = init_paths();
     if !file_errors.is_empty() {
         files_not_created_on_launch(file_errors);
@@ -302,6 +328,9 @@ fn main() {
         };
     }
     ztracing::init();
+    for line in legacy_dir_migration {
+        log::info!("legacy data migration: {line}");
+    }
 
     let version = option_env!("ZED_BUILD_ID");
     let app_commit_sha =
@@ -1059,7 +1088,7 @@ fn handle_open_request(request: OpenRequest, app_state: Arc<AppState>, cx: &mut 
                                 });
                             } else {
                                 log::warn!(
-                                    "synthzed://agent received but the AgentPanel is not registered \
+                                    "synthcode://agent received but the AgentPanel is not registered \
                                      (is `disable_ai` enabled?)"
                                 );
                             }
@@ -1096,7 +1125,7 @@ fn handle_open_request(request: OpenRequest, app_state: Arc<AppState>, cx: &mut 
                                     .project()
                                     .update(cx, |project, _| project.lsp_store())
                             })?;
-                            let uri = format!("synthzed://schemas/{}", schema_path);
+                            let uri = format!("synthcode://schemas/{}", schema_path);
                             let json_schema_content =
                                 json_schema_store::handle_schema_request(lsp_store, uri, cx)
                                     .await?;
@@ -1145,8 +1174,8 @@ fn handle_open_request(request: OpenRequest, app_state: Arc<AppState>, cx: &mut 
                 });
             }
             OpenRequestKind::Setting { setting_path } => {
-                // synthzed://settings/languages/$(language)/tab_size  - DONT SUPPORT
-                // synthzed://settings/languages/Rust/tab_size  - SUPPORT
+                // synthcode://settings/languages/$(language)/tab_size  - DONT SUPPORT
+                // synthcode://settings/languages/Rust/tab_size  - SUPPORT
                 // languages.$(language).tab_size
                 // [ languages $(language) tab_size]
                 cx.spawn(async move |cx| {
@@ -1365,7 +1394,7 @@ fn handle_open_request(request: OpenRequest, app_state: Arc<AppState>, cx: &mut 
 }
 
 async fn authenticate(_client: Arc<Client>, _cx: &AsyncApp) -> Result<()> {
-    // Synth Zed is local-first: never silently sign in to zed.dev.
+    // Synth Code is local-first: never silently sign in to zed.dev.
     Ok(())
 }
 
@@ -1675,14 +1704,14 @@ fn stdout_is_a_pty() -> bool {
 }
 
 #[derive(Parser, Debug)]
-#[command(name = "zed", disable_version_flag = true, max_term_width = 100)]
+#[command(name = "synth-code", disable_version_flag = true, max_term_width = 100)]
 struct Args {
     /// A sequence of space-separated paths or urls that you want to open.
     ///
     /// Use `path:line:row` syntax to open a file at a specific location.
     /// Non-existing paths and directories will ignore `:line:row` suffix.
     ///
-    /// URLs can either be `file://` or `synthzed://` scheme, or relative to <https://zed.dev>.
+    /// URLs can either be `file://` or `synthcode://` scheme, or relative to <https://zed.dev>.
     paths_or_urls: Vec<String>,
 
     /// Pairs of file paths to diff. Can be specified multiple times.
@@ -1693,9 +1722,9 @@ struct Args {
     /// Sets a custom directory for all user data (e.g., database, extensions, logs).
     ///
     /// This overrides the default platform-specific data directory location.
-    /// On macOS, the default is `~/Library/Application Support/SynthZed`.
-    /// On Linux/FreeBSD, the default is `$XDG_DATA_HOME/synthzed`.
-    /// On Windows, the default is `%LOCALAPPDATA%\SynthZed`.
+    /// On macOS, the default is `~/Library/Application Support/SynthCode`.
+    /// On Linux/FreeBSD, the default is `$XDG_DATA_HOME/synthcode`.
+    /// On Windows, the default is `%LOCALAPPDATA%\SynthCode`.
     #[arg(long, value_name = "DIR", verbatim_doc_comment)]
     user_data_dir: Option<String>,
 
@@ -1802,8 +1831,8 @@ fn parse_url_arg(arg: &str, cx: &App) -> String {
         Ok(path) => format!("file://{}", path.display()),
         Err(_) => {
             if arg.starts_with("file://")
-                || arg.starts_with("synthzed://")
-                || arg.starts_with("synthzed-cli://")
+                || arg.starts_with("synthcode://")
+                || arg.starts_with("synthcode-cli://")
                 || arg.starts_with("ssh://")
                 || parse_zed_link(arg, cx).is_some()
             {

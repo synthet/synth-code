@@ -27,7 +27,7 @@ impl OpenUrlModal {
     pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
         let editor = cx.new(|cx| {
             let mut editor = Editor::single_line(window, cx);
-            editor.set_placeholder_text("synthzed://...", window, cx);
+            editor.set_placeholder_text("synthcode://...", window, cx);
             editor
         });
 
@@ -53,8 +53,8 @@ impl OpenUrlModal {
             return;
         }
 
-        // Handle synthzed:// URLs internally.
-        if url.starts_with("synthzed://") || url.starts_with("synthzed-cli://") {
+        // Handle synthcode:// URLs internally.
+        if url.starts_with("synthcode://") || url.starts_with("synthcode-cli://") {
             OpenListener::global(cx).open(RawOpenRequest {
                 urls: vec![url],
                 ..Default::default()

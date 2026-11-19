@@ -44,7 +44,7 @@ struct ExplorerCommandInjector;
 impl IExplorerCommand_Impl for ExplorerCommandInjector_Impl {
     fn GetTitle(&self, _: Ref<IShellItemArray>) -> Result<windows_core::PWSTR> {
         let command_description =
-            retrieve_command_description().unwrap_or(HSTRING::from("Open with Synth Zed"));
+            retrieve_command_description().unwrap_or(HSTRING::from("Open with Synth Code"));
         unsafe { SHStrDupW(&command_description) }
     }
 
@@ -178,21 +178,21 @@ fn get_zed_install_folder() -> Option<PathBuf> {
 
 #[inline]
 fn get_zed_exe_path() -> Option<String> {
-    get_zed_install_folder().map(|path| path.join("SynthZed.exe").to_string_lossy().into_owned())
+    get_zed_install_folder().map(|path| path.join("synth-code.exe").to_string_lossy().into_owned())
 }
 
 #[inline]
 fn retrieve_command_description() -> Result<HSTRING> {
     #[cfg(all(feature = "stable", not(feature = "preview"), not(feature = "nightly")))]
-    const REG_PATH: &str = "Software\\Classes\\SynthZedContextMenu";
+    const REG_PATH: &str = "Software\\Classes\\SynthCodeContextMenu";
     #[cfg(all(feature = "preview", not(feature = "stable"), not(feature = "nightly")))]
-    const REG_PATH: &str = "Software\\Classes\\SynthZedPreviewContextMenu";
+    const REG_PATH: &str = "Software\\Classes\\SynthCodePreviewContextMenu";
     #[cfg(all(feature = "nightly", not(feature = "stable"), not(feature = "preview")))]
-    const REG_PATH: &str = "Software\\Classes\\SynthZedNightlyContextMenu";
+    const REG_PATH: &str = "Software\\Classes\\SynthCodeNightlyContextMenu";
 
     // Make cargo clippy happy
     #[cfg(all(feature = "nightly", feature = "stable", feature = "preview"))]
-    const REG_PATH: &str = "Software\\Classes\\SynthZedClippyContextMenu";
+    const REG_PATH: &str = "Software\\Classes\\SynthCodeClippyContextMenu";
 
     let key = windows_registry::CURRENT_USER.open(REG_PATH)?;
     key.get_hstring("Title")

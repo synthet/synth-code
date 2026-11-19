@@ -2,7 +2,7 @@
 AppId={#AppId}
 AppName={#AppName}
 AppVerName={#AppDisplayName}
-AppPublisher=Synth Zed Contributors
+AppPublisher=Synth Code Contributors
 AppPublisherURL=https://github.com/synthet/zed
 AppSupportURL=https://github.com/synthet/zed
 AppUpdatesURL=https://github.com/synthet/zed
@@ -1256,10 +1256,10 @@ Root: HKCU; Subkey: "Software\Classes\Drive\shell\{#RegValueName}\command"; Valu
 Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{code:AddToPath|{app}\bin}"; Tasks: addtopath; Check: NeedsAddToPath(ExpandConstant('{app}\bin'))
 
 ; URI Scheme
-Root: HKCU; Subkey: "Software\Classes\synthzed"; ValueType: "string"; ValueData: "URL:synthzed Protocol"; Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\Classes\synthzed"; ValueType: "string"; ValueName: "URL Protocol"; ValueData: ""
-Root: HKCU; Subkey: "Software\Classes\synthzed\DefaultIcon"; ValueType: "string"; ValueData: "{app}\{#AppExeName}.exe,1"
-Root: HKCU; Subkey: "Software\Classes\synthzed\shell\open\command"; ValueType: "string"; ValueData: """{app}\{#AppExeName}.exe"" ""%1"""
+Root: HKCU; Subkey: "Software\Classes\synthcode"; ValueType: "string"; ValueData: "URL:synthcode Protocol"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Classes\synthcode"; ValueType: "string"; ValueName: "URL Protocol"; ValueData: ""
+Root: HKCU; Subkey: "Software\Classes\synthcode\DefaultIcon"; ValueType: "string"; ValueData: "{app}\{#AppExeName}.exe,1"
+Root: HKCU; Subkey: "Software\Classes\synthcode\shell\open\command"; ValueType: "string"; ValueData: """{app}\{#AppExeName}.exe"" ""%1"""
 
 [Code]
 function WizardNotSilent(): Boolean;

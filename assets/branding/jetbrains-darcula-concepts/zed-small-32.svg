@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
-  <title id="title">Synth Zed — 24/32 px simplification</title>
-  <desc id="description">The carved Z with its box widened to 208..816 and the band to 288 units so the band stays above eight pixels and the carves stay distinct at 32 px.</desc>
+  <title id="title">Synth Code — 24/32 px simplification</title>
+  <desc id="description">The Synth Code window with a 96-unit frame and heavier chevrons and slash, so every stroke stays near three pixels at 32 px.</desc>
   <g id="foundation">
     <rect x="64" y="64" width="896" height="896" rx="184" fill="#101014"/>
   </g>
-  <g id="glyph" fill="#FFFFFF">
-      <path d="M 528,224 H 816 L 496,800 H 208 Z"/>
-  </g>
-  <g id="accent" fill="#1FD3F2">
-      <path d="M 248,224 L 528,224 C 416,425.6 378.24,480 208,480 L 208,264 A 40 40 0 0 1 248,224 Z"/>
-      <path d="M 776,800 L 496,800 C 608,598.4 645.76,544 816,544 L 816,760 A 40 40 0 0 1 776,800 Z"/>
+  <g id="glyph" fill="#A9B7C6">
+      <path fill-rule="evenodd" d="M 288,224 H 736 A 96 96 0 0 1 832 320 V 704 A 96 96 0 0 1 736 800 H 288 A 96 96 0 0 1 192 704 V 320 A 96 96 0 0 1 288 224 Z M 312,320 H 712 A 24 24 0 0 1 736 344 V 680 A 24 24 0 0 1 712 704 H 312 A 24 24 0 0 1 288 680 V 344 A 24 24 0 0 1 312 320 Z"/>
+      <path d="M 368,400 L 448,400 L 384,512 L 448,624 L 368,624 L 304,512 Z"/>
+      <path d="M 656,624 L 576,624 L 640,512 L 576,400 L 656,400 L 720,512 Z"/>
+      <path d="M 528,376 H 592 L 496,648 H 432 Z"/>
   </g>
 </svg>

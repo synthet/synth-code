@@ -58,24 +58,24 @@ linux() {
     db_suffix="stable"
     case "$channel" in
       stable)
-        appid="io.github.synthet.Zed"
+        appid="io.github.synthet.code"
         db_suffix="stable"
         ;;
       nightly)
-        appid="io.github.synthet.Zed-Nightly"
+        appid="io.github.synthet.code-nightly"
         db_suffix="nightly"
         ;;
       preview)
-        appid="io.github.synthet.Zed-Preview"
+        appid="io.github.synthet.code-preview"
         db_suffix="preview"
         ;;
       dev)
-        appid="io.github.synthet.Zed-Dev"
+        appid="io.github.synthet.code-dev"
         db_suffix="dev"
         ;;
       *)
         echo "Unknown release channel: ${channel}. Using stable app ID."
-        appid="io.github.synthet.Zed"
+        appid="io.github.synthet.code"
         db_suffix="stable"
         ;;
     esac
@@ -107,22 +107,22 @@ linux() {
 macos() {
     app="Zed.app"
     db_suffix="stable"
-    app_id="io.github.synthet.Zed"
+    app_id="io.github.synthet.code"
     case "$channel" in
       nightly)
         app="Zed Nightly.app"
         db_suffix="nightly"
-        app_id="io.github.synthet.Zed-Nightly"
+        app_id="io.github.synthet.code-nightly"
         ;;
       preview)
         app="Zed Preview.app"
         db_suffix="preview"
-        app_id="io.github.synthet.Zed-Preview"
+        app_id="io.github.synthet.code-preview"
         ;;
       dev)
         app="Zed Dev.app"
         db_suffix="dev"
-        app_id="io.github.synthet.Zed-Dev"
+        app_id="io.github.synthet.code-dev"
         ;;
     esac
 

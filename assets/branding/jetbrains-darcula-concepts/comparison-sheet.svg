@@ -3,17 +3,23 @@
   <title>Zed + Warp — Synth fork icon family</title>
   <rect width="1536" height="1024" fill="#16161A" />
   <text x="768" y="99" font-size="76" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#D8E0EA">Zed + Warp</text>
-  <text x="768" y="146" font-size="24" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">Synth fork icon family · flat plate, carved Z, silver Warp mark</text>
+  <text x="768" y="146" font-size="24" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">Synth fork icon family · flat plate, silver mark</text>
   <svg width="324" height="324" viewBox="0 0 1024 1024" role="img" x="48" y="190">
+    <defs>
+      <linearGradient id="hero-0-silver" x1="0" y1="0" x2="0.65" y2="1">
+        <stop stop-color="#F8FAFC" />
+        <stop offset="0.45" stop-color="#C3CFDC" />
+        <stop offset="1" stop-color="#A9B7C6" />
+      </linearGradient>
+    </defs>
     <g id="hero-0-foundation">
       <rect x="64" y="64" width="896" height="896" rx="184" fill="#101014" />
     </g>
-    <g id="hero-0-glyph" fill="#FFFFFF">
-      <path d="M 552,240 H 800 L 472,784 H 224 Z" />
-    </g>
-    <g id="hero-0-accent" fill="#1FD3F2">
-      <path d="M 272,240 L 552,240 C 437.2,430.4 385.28,472 224,472 L 224,288 A 48 48 0 0 1 272,240 Z" />
-      <path d="M 752,784 L 472,784 C 586.8,593.6 638.72,552 800,552 L 800,736 A 48 48 0 0 1 752,784 Z" />
+    <g id="hero-0-glyph" fill="url(#hero-0-silver)">
+      <path fill-rule="evenodd" d="M 284,256 H 740 A 80 80 0 0 1 820 336 V 688 A 80 80 0 0 1 740 768 H 284 A 80 80 0 0 1 204 688 V 336 A 80 80 0 0 1 284 256 Z M 304,328 H 720 A 28 28 0 0 1 748 356 V 668 A 28 28 0 0 1 720 696 H 304 A 28 28 0 0 1 276 668 V 356 A 28 28 0 0 1 304 328 Z" />
+      <path d="M 382,422 L 440,422 L 362,512 L 440,602 L 382,602 L 304,512 Z" />
+      <path d="M 642,602 L 584,602 L 662,512 L 584,422 L 642,422 L 720,512 Z" />
+      <path d="M 534,396 H 578 L 490,628 H 446 Z" />
     </g>
   </svg>
   <text x="210" y="551" font-size="24" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">Zed / macOS</text>
@@ -38,12 +44,11 @@
     <g id="hero-2-foundation">
       <rect x="64" y="64" width="896" height="896" rx="184" fill="#101014" />
     </g>
-    <g id="hero-2-glyph" fill="#FFFFFF">
-      <path d="M 552,240 H 800 L 472,784 H 224 Z" />
-    </g>
-    <g id="hero-2-accent" fill="#1FD3F2">
-      <path d="M 272,240 L 552,240 C 437.2,430.4 385.28,472 224,472 L 224,288 A 48 48 0 0 1 272,240 Z" />
-      <path d="M 752,784 L 472,784 C 586.8,593.6 638.72,552 800,552 L 800,736 A 48 48 0 0 1 752,784 Z" />
+    <g id="hero-2-glyph" fill="#A9B7C6">
+      <path fill-rule="evenodd" d="M 284,256 H 740 A 80 80 0 0 1 820 336 V 688 A 80 80 0 0 1 740 768 H 284 A 80 80 0 0 1 204 688 V 336 A 80 80 0 0 1 284 256 Z M 304,328 H 720 A 28 28 0 0 1 748 356 V 668 A 28 28 0 0 1 720 696 H 304 A 28 28 0 0 1 276 668 V 356 A 28 28 0 0 1 304 328 Z" />
+      <path d="M 382,422 L 440,422 L 362,512 L 440,602 L 382,602 L 304,512 Z" />
+      <path d="M 642,602 L 584,602 L 662,512 L 584,422 L 642,422 L 720,512 Z" />
+      <path d="M 534,396 H 578 L 490,628 H 446 Z" />
     </g>
   </svg>
   <text x="954" y="551" font-size="24" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">Zed / Windows</text>
@@ -63,12 +68,11 @@
     <g id="small-0-32-foundation">
       <rect x="64" y="64" width="896" height="896" rx="184" fill="#101014" />
     </g>
-    <g id="small-0-32-glyph" fill="#FFFFFF">
-      <path d="M 528,224 H 816 L 496,800 H 208 Z" />
-    </g>
-    <g id="small-0-32-accent" fill="#1FD3F2">
-      <path d="M 248,224 L 528,224 C 416,425.6 378.24,480 208,480 L 208,264 A 40 40 0 0 1 248,224 Z" />
-      <path d="M 776,800 L 496,800 C 608,598.4 645.76,544 816,544 L 816,760 A 40 40 0 0 1 776,800 Z" />
+    <g id="small-0-32-glyph" fill="#A9B7C6">
+      <path fill-rule="evenodd" d="M 288,224 H 736 A 96 96 0 0 1 832 320 V 704 A 96 96 0 0 1 736 800 H 288 A 96 96 0 0 1 192 704 V 320 A 96 96 0 0 1 288 224 Z M 312,320 H 712 A 24 24 0 0 1 736 344 V 680 A 24 24 0 0 1 712 704 H 312 A 24 24 0 0 1 288 680 V 344 A 24 24 0 0 1 312 320 Z" />
+      <path d="M 368,400 L 448,400 L 384,512 L 448,624 L 368,624 L 304,512 Z" />
+      <path d="M 656,624 L 576,624 L 640,512 L 576,400 L 656,400 L 720,512 Z" />
+      <path d="M 528,376 H 592 L 496,648 H 432 Z" />
     </g>
   </svg>
   <text x="160.0" y="744" font-size="16" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">32</text>
@@ -76,12 +80,11 @@
     <g id="small-0-16-foundation">
       <rect x="64" y="64" width="896" height="896" rx="184" fill="#101014" />
     </g>
-    <g id="small-0-16-glyph" fill="#FFFFFF">
-      <path d="M 512,192 H 832 L 512,832 H 192 Z" />
-    </g>
-    <g id="small-0-16-accent" fill="#1FD3F2">
-      <path d="M 192,192 L 512,192 C 400,416 371.2,448 192,448 L 192,192 A 0 0 0 0 1 192,192 Z" />
-      <path d="M 832,832 L 512,832 C 624,608 652.8,576 832,576 L 832,832 A 0 0 0 0 1 832,832 Z" />
+    <g id="small-0-16-glyph" fill="#A9B7C6">
+      <path fill-rule="evenodd" d="M 192,192 H 832 A 64 64 0 0 1 896 256 V 768 A 64 64 0 0 1 832 832 H 192 A 64 64 0 0 1 128 768 V 256 A 64 64 0 0 1 192 192 Z M 192,256 H 832 A 0 0 0 0 1 832 256 V 768 A 0 0 0 0 1 832 768 H 192 A 0 0 0 0 1 192 768 V 256 A 0 0 0 0 1 192 256 Z" />
+      <path d="M 320,384 L 384,384 L 320,512 L 384,640 L 320,640 L 256,512 Z" />
+      <path d="M 704,640 L 640,640 L 704,512 L 640,384 L 704,384 L 768,512 Z" />
+      <path d="M 544,352 H 608 L 480,672 H 416 Z" />
     </g>
   </svg>
   <text x="256.0" y="744" font-size="16" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">16</text>
@@ -117,12 +120,11 @@
     <g id="small-2-32-foundation">
       <rect x="64" y="64" width="896" height="896" rx="184" fill="#101014" />
     </g>
-    <g id="small-2-32-glyph" fill="#FFFFFF">
-      <path d="M 528,224 H 816 L 496,800 H 208 Z" />
-    </g>
-    <g id="small-2-32-accent" fill="#1FD3F2">
-      <path d="M 248,224 L 528,224 C 416,425.6 378.24,480 208,480 L 208,264 A 40 40 0 0 1 248,224 Z" />
-      <path d="M 776,800 L 496,800 C 608,598.4 645.76,544 816,544 L 816,760 A 40 40 0 0 1 776,800 Z" />
+    <g id="small-2-32-glyph" fill="#A9B7C6">
+      <path fill-rule="evenodd" d="M 288,224 H 736 A 96 96 0 0 1 832 320 V 704 A 96 96 0 0 1 736 800 H 288 A 96 96 0 0 1 192 704 V 320 A 96 96 0 0 1 288 224 Z M 312,320 H 712 A 24 24 0 0 1 736 344 V 680 A 24 24 0 0 1 712 704 H 312 A 24 24 0 0 1 288 680 V 344 A 24 24 0 0 1 312 320 Z" />
+      <path d="M 368,400 L 448,400 L 384,512 L 448,624 L 368,624 L 304,512 Z" />
+      <path d="M 656,624 L 576,624 L 640,512 L 576,400 L 656,400 L 720,512 Z" />
+      <path d="M 528,376 H 592 L 496,648 H 432 Z" />
     </g>
   </svg>
   <text x="904.0" y="744" font-size="16" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">32</text>
@@ -130,12 +132,11 @@
     <g id="small-2-16-foundation">
       <rect x="64" y="64" width="896" height="896" rx="184" fill="#101014" />
     </g>
-    <g id="small-2-16-glyph" fill="#FFFFFF">
-      <path d="M 512,192 H 832 L 512,832 H 192 Z" />
-    </g>
-    <g id="small-2-16-accent" fill="#1FD3F2">
-      <path d="M 192,192 L 512,192 C 400,416 371.2,448 192,448 L 192,192 A 0 0 0 0 1 192,192 Z" />
-      <path d="M 832,832 L 512,832 C 624,608 652.8,576 832,576 L 832,832 A 0 0 0 0 1 832,832 Z" />
+    <g id="small-2-16-glyph" fill="#A9B7C6">
+      <path fill-rule="evenodd" d="M 192,192 H 832 A 64 64 0 0 1 896 256 V 768 A 64 64 0 0 1 832 832 H 192 A 64 64 0 0 1 128 768 V 256 A 64 64 0 0 1 192 192 Z M 192,256 H 832 A 0 0 0 0 1 832 256 V 768 A 0 0 0 0 1 832 768 H 192 A 0 0 0 0 1 192 768 V 256 A 0 0 0 0 1 192 256 Z" />
+      <path d="M 320,384 L 384,384 L 320,512 L 384,640 L 320,640 L 256,512 Z" />
+      <path d="M 704,640 L 640,640 L 704,512 L 640,384 L 704,384 L 768,512 Z" />
+      <path d="M 544,352 H 608 L 480,672 H 416 Z" />
     </g>
   </svg>
   <text x="1000.0" y="744" font-size="16" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">16</text>
@@ -171,30 +172,34 @@
   <text x="64" y="822" font-size="22" text-anchor="start" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">Palette</text>
   <rect x="64" y="851" width="76" height="66" rx="10" fill="#101014" stroke="#2A2A32" />
   <text x="102" y="945" font-size="15" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">#101014</text>
-  <rect x="168" y="851" width="76" height="66" rx="10" fill="#FFFFFF" stroke="#2A2A32" />
-  <text x="206" y="945" font-size="15" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">#FFFFFF</text>
-  <rect x="272" y="851" width="76" height="66" rx="10" fill="#1FD3F2" stroke="#2A2A32" />
-  <text x="310" y="945" font-size="15" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">#1FD3F2</text>
-  <rect x="376" y="851" width="76" height="66" rx="10" fill="#A9B7C6" stroke="#2A2A32" />
-  <text x="414" y="945" font-size="15" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">#A9B7C6</text>
-  <rect x="480" y="851" width="76" height="66" rx="10" fill="#6897BB" stroke="#2A2A32" />
-  <text x="518" y="945" font-size="15" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">#6897BB</text>
-  <rect x="584" y="851" width="76" height="66" rx="10" fill="#9876AA" stroke="#2A2A32" />
-  <text x="622" y="945" font-size="15" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">#9876AA</text>
-  <rect x="688" y="851" width="76" height="66" rx="10" fill="#CC7832" stroke="#2A2A32" />
-  <text x="726" y="945" font-size="15" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">#CC7832</text>
+  <rect x="168" y="851" width="76" height="66" rx="10" fill="#A9B7C6" stroke="#2A2A32" />
+  <text x="206" y="945" font-size="15" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">#A9B7C6</text>
+  <rect x="272" y="851" width="76" height="66" rx="10" fill="#F8FAFC" stroke="#2A2A32" />
+  <text x="310" y="945" font-size="15" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">#F8FAFC</text>
+  <rect x="376" y="851" width="76" height="66" rx="10" fill="#6897BB" stroke="#2A2A32" />
+  <text x="414" y="945" font-size="15" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">#6897BB</text>
+  <rect x="480" y="851" width="76" height="66" rx="10" fill="#9876AA" stroke="#2A2A32" />
+  <text x="518" y="945" font-size="15" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">#9876AA</text>
+  <rect x="584" y="851" width="76" height="66" rx="10" fill="#CC7832" stroke="#2A2A32" />
+  <text x="622" y="945" font-size="15" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">#CC7832</text>
   <text x="907" y="822" font-size="22" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" fill="#A9B7C6">Dock concept</text>
   <rect x="786" y="850" width="242" height="104" rx="20" fill="#1E1E24" stroke="#2A2A32" />
   <svg width="72" height="72" viewBox="0 0 1024 1024" role="img" x="817" y="866">
+    <defs>
+      <linearGradient id="context-0-0-silver" x1="0" y1="0" x2="0.65" y2="1">
+        <stop stop-color="#F8FAFC" />
+        <stop offset="0.45" stop-color="#C3CFDC" />
+        <stop offset="1" stop-color="#A9B7C6" />
+      </linearGradient>
+    </defs>
     <g id="context-0-0-foundation">
       <rect x="64" y="64" width="896" height="896" rx="184" fill="#101014" />
     </g>
-    <g id="context-0-0-glyph" fill="#FFFFFF">
-      <path d="M 552,240 H 800 L 472,784 H 224 Z" />
-    </g>
-    <g id="context-0-0-accent" fill="#1FD3F2">
-      <path d="M 272,240 L 552,240 C 437.2,430.4 385.28,472 224,472 L 224,288 A 48 48 0 0 1 272,240 Z" />
-      <path d="M 752,784 L 472,784 C 586.8,593.6 638.72,552 800,552 L 800,736 A 48 48 0 0 1 752,784 Z" />
+    <g id="context-0-0-glyph" fill="url(#context-0-0-silver)">
+      <path fill-rule="evenodd" d="M 284,256 H 740 A 80 80 0 0 1 820 336 V 688 A 80 80 0 0 1 740 768 H 284 A 80 80 0 0 1 204 688 V 336 A 80 80 0 0 1 284 256 Z M 304,328 H 720 A 28 28 0 0 1 748 356 V 668 A 28 28 0 0 1 720 696 H 304 A 28 28 0 0 1 276 668 V 356 A 28 28 0 0 1 304 328 Z" />
+      <path d="M 382,422 L 440,422 L 362,512 L 440,602 L 382,602 L 304,512 Z" />
+      <path d="M 642,602 L 584,602 L 662,512 L 584,422 L 642,422 L 720,512 Z" />
+      <path d="M 534,396 H 578 L 490,628 H 446 Z" />
     </g>
   </svg>
   <svg width="72" height="72" viewBox="0 0 1024 1024" role="img" x="923" y="866">
@@ -219,12 +224,11 @@
     <g id="context-2-0-foundation">
       <rect x="64" y="64" width="896" height="896" rx="184" fill="#101014" />
     </g>
-    <g id="context-2-0-glyph" fill="#FFFFFF">
-      <path d="M 552,240 H 800 L 472,784 H 224 Z" />
-    </g>
-    <g id="context-2-0-accent" fill="#1FD3F2">
-      <path d="M 272,240 L 552,240 C 437.2,430.4 385.28,472 224,472 L 224,288 A 48 48 0 0 1 272,240 Z" />
-      <path d="M 752,784 L 472,784 C 586.8,593.6 638.72,552 800,552 L 800,736 A 48 48 0 0 1 752,784 Z" />
+    <g id="context-2-0-glyph" fill="#A9B7C6">
+      <path fill-rule="evenodd" d="M 284,256 H 740 A 80 80 0 0 1 820 336 V 688 A 80 80 0 0 1 740 768 H 284 A 80 80 0 0 1 204 688 V 336 A 80 80 0 0 1 284 256 Z M 304,328 H 720 A 28 28 0 0 1 748 356 V 668 A 28 28 0 0 1 720 696 H 304 A 28 28 0 0 1 276 668 V 356 A 28 28 0 0 1 304 328 Z" />
+      <path d="M 382,422 L 440,422 L 362,512 L 440,602 L 382,602 L 304,512 Z" />
+      <path d="M 642,602 L 584,602 L 662,512 L 584,422 L 642,422 L 720,512 Z" />
+      <path d="M 534,396 H 578 L 490,628 H 446 Z" />
     </g>
   </svg>
   <svg width="72" height="72" viewBox="0 0 1024 1024" role="img" x="1307" y="866">

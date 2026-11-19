@@ -44,10 +44,10 @@ pub static RELEASE_CHANNEL: LazyLock<ReleaseChannel> =
 #[cfg(target_os = "windows")]
 pub fn app_identifier() -> &'static str {
     match *RELEASE_CHANNEL {
-        ReleaseChannel::Dev => "SynthZed-Editor-Dev",
-        ReleaseChannel::Nightly => "SynthZed-Editor-Nightly",
-        ReleaseChannel::Preview => "SynthZed-Editor-Preview",
-        ReleaseChannel::Stable => "SynthZed-Editor-Stable",
+        ReleaseChannel::Dev => "SynthCode-Editor-Dev",
+        ReleaseChannel::Nightly => "SynthCode-Editor-Nightly",
+        ReleaseChannel::Preview => "SynthCode-Editor-Preview",
+        ReleaseChannel::Stable => "SynthCode-Editor-Stable",
     }
 }
 
@@ -205,10 +205,10 @@ impl ReleaseChannel {
     /// Returns the display name for this [`ReleaseChannel`].
     pub fn display_name(&self) -> &'static str {
         match self {
-            ReleaseChannel::Dev => "Synth Zed Dev",
-            ReleaseChannel::Nightly => "Synth Zed Nightly",
-            ReleaseChannel::Preview => "Synth Zed Preview",
-            ReleaseChannel::Stable => "Synth Zed",
+            ReleaseChannel::Dev => "Synth Code Dev",
+            ReleaseChannel::Nightly => "Synth Code Nightly",
+            ReleaseChannel::Preview => "Synth Code Preview",
+            ReleaseChannel::Stable => "Synth Code",
         }
     }
 
@@ -227,10 +227,10 @@ impl ReleaseChannel {
     /// This also has to match the bundle identifier for Zed on macOS.
     pub fn app_id(&self) -> &'static str {
         match self {
-            ReleaseChannel::Dev => "io.github.synthet.Zed-Dev",
-            ReleaseChannel::Nightly => "io.github.synthet.Zed-Nightly",
-            ReleaseChannel::Preview => "io.github.synthet.Zed-Preview",
-            ReleaseChannel::Stable => "io.github.synthet.Zed",
+            ReleaseChannel::Dev => "io.github.synthet.code-dev",
+            ReleaseChannel::Nightly => "io.github.synthet.code-nightly",
+            ReleaseChannel::Preview => "io.github.synthet.code-preview",
+            ReleaseChannel::Stable => "io.github.synthet.code",
         }
     }
 

@@ -19,7 +19,7 @@ use util::paths::{PathStyle, UrlExt};
 
 use crate::Range;
 
-const URL_REGEX: &str = r#"(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file://|git://|ssh:|ftp://|synthzed://)[^\u{0000}-\u{001F}\u{007F}-\u{009F}<>"\s{-}\^⟨⟩`']+"#;
+const URL_REGEX: &str = r#"(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file://|git://|ssh:|ftp://|synthcode://)[^\u{0000}-\u{001F}\u{007F}-\u{009F}<>"\s{-}\^⟨⟩`']+"#;
 const WIDE_CHAR_SPACERS: Flags =
     Flags::from_bits(Flags::LEADING_WIDE_CHAR_SPACER.bits() | Flags::WIDE_CHAR_SPACER.bits())
         .unwrap();
@@ -520,8 +520,11 @@ mod tests {
         );
         re_test(
             URL_REGEX,
-            "open synthzed://channel/the-channel and synthzed://settings/theme now",
-            vec!["synthzed://channel/the-channel", "synthzed://settings/theme"],
+            "open synthcode://channel/the-channel and synthcode://settings/theme now",
+            vec![
+                "synthcode://channel/the-channel",
+                "synthcode://settings/theme",
+            ],
         );
     }
 

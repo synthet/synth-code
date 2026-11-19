@@ -15,7 +15,7 @@ LABELS = ("Zed / macOS", "Warp / macOS", "Zed / Windows", "Warp / Windows")
 # Sizes at or below 32 px render from hand-simplified sources, not the masters.
 SMALL = ("zed-small-32", "warp-small-32", "zed-small-32", "warp-small-32")
 SMALL_16 = ("zed-small-16", "warp-small-32", "zed-small-16", "warp-small-32")
-PALETTE = ("#101014", "#FFFFFF", "#1FD3F2", "#A9B7C6", "#6897BB", "#9876AA", "#CC7832")
+PALETTE = ("#101014", "#A9B7C6", "#F8FAFC", "#6897BB", "#9876AA", "#CC7832")
 PAPER = "#16161A"
 
 
@@ -89,7 +89,7 @@ def comparison_sheet(masters):
     element(sheet, "rect", width=1536, height=1024, fill=PAPER)
     text(sheet, 768, 99, "Zed + Warp", 76, "middle", "#D8E0EA")
     text(
-        sheet, 768, 146, "Synth fork icon family · flat plate, carved Z, silver Warp mark", 24, "middle"
+        sheet, 768, 146, "Synth fork icon family · flat plate, silver mark", 24, "middle"
     )
     for index, (master, label) in enumerate(zip(masters, LABELS)):
         x = 48 + index * 372
