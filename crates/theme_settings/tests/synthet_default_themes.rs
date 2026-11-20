@@ -75,3 +75,37 @@ fn only_theme_json_is_embedded() {
         "non-theme assets embedded under themes/: {non_json:?}"
     );
 }
+
+/// Tinted buttons (`ButtonStyle::Tinted`) and status callouts draw with the
+/// status background and border colors. A fork theme that omits them falls back
+/// to the default theme's bright blue, which clashes with themes such as
+/// JetBrains Darcula.
+#[test]
+fn synthet_themes_define_status_backgrounds_and_borders() {
+    let mut missing = Vec::new();
+    for path in gpui::AssetSource::list(&assets::Assets, "themes/synthet/")
+        .expect("failed to list synthet theme assets")
+    {
+        let bytes = gpui::AssetSource::load(&assets::Assets, &path)
+            .expect("failed to load theme asset")
+            .expect("theme asset missing");
+        let family: serde_json::Value =
+            serde_json::from_slice(&bytes).expect("theme asset is not valid JSON");
+        for theme in family["themes"].as_array().into_iter().flatten() {
+            let style = &theme["style"];
+            for status in ["info", "error", "warning", "success"] {
+                for suffix in ["background", "border"] {
+                    let key = format!("{status}.{suffix}");
+                    if style[&key].as_str().is_none_or(str::is_empty) {
+                        missing.push(format!("{}: {key}", theme["name"]));
+                    }
+                }
+            }
+        }
+    }
+
+    assert!(
+        missing.is_empty(),
+        "themes missing status colors: {missing:?}"
+    );
+}

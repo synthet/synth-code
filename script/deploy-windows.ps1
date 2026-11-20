@@ -233,6 +233,27 @@ function New-ZedStartMenuShortcut {
     $shortcut.Save()
 }
 
+# Help > View Dependency Licenses and the About window read assets/licenses.md,
+# which is generated, not committed. Generate it before building so it gets
+# embedded. generate-licenses.ps1 needs PowerShell 7 and installs cargo-about
+# when it is missing. A failure only warns: the app then shows a short note.
+function Invoke-ZedGenerateLicenses {
+    $pwsh = Get-Command pwsh -ErrorAction SilentlyContinue
+    if (-not $pwsh) {
+        Write-Warning "pwsh (PowerShell 7) not found; skipping assets/licenses.md"
+        return
+    }
+    Write-Host "==> licenses"
+    & $pwsh.Source -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "generate-licenses.ps1")
+    if ($null -ne $LASTEXITCODE -and $LASTEXITCODE -ne 0) {
+        Write-Warning "generate-licenses.ps1 failed with exit code $LASTEXITCODE; the build will not include dependency licenses"
+        return
+    }
+    # rust-embed does not notice a newly created file; bump the assets crate so
+    # cargo re-embeds the folder.
+    (Get-Item (Join-Path $repoRoot "crates\assets\src\assets.rs")).LastWriteTime = Get-Date
+}
+
 function Invoke-ZedDeployBuild {
     if ($crossCompile) {
         throw "Cross-compiling deploy from $hostArch to $Architecture is not supported. Build on the target machine."
@@ -261,6 +282,8 @@ function Invoke-ZedDeployBuild {
     if ($null -ne $LASTEXITCODE -and $LASTEXITCODE -ne 0) {
         throw "rustup target add $triple failed with exit code $LASTEXITCODE"
     }
+
+    Invoke-ZedGenerateLicenses
 
     $jobCount = if ($Jobs -gt 0) { $Jobs } else { 2 }
     $buildArgs = @(

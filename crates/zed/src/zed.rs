@@ -89,10 +89,10 @@ use std::{
 use terminal_view::terminal_panel::{self, TerminalPanel};
 use theme::{ActiveTheme, SystemAppearance, ThemeRegistry, deserialize_icon_theme};
 use theme_settings::{ThemeSettings, load_user_theme};
-use ui::{Navigable, NavigableEntry, PopoverMenuHandle, TintColor, prelude::*};
+use ui::{ButtonLink, Navigable, NavigableEntry, PopoverMenuHandle, TintColor, prelude::*};
 use util::markdown::MarkdownString;
 use util::rel_path::RelPath;
-use util::{ResultExt, asset_str, maybe};
+use util::{ResultExt, maybe};
 use uuid::Uuid;
 use vim_mode_setting::VimModeSetting;
 use workspace::notifications::{NotificationId, dismiss_app_notification, show_app_notification};
@@ -237,9 +237,20 @@ pub fn init(cx: &mut App) {
 
     cx.on_action(|_: &zed_actions::OpenLicenses, cx| {
         with_active_or_new_workspace(cx, |workspace, window, cx| {
+            // Builds that skip script/generate-licenses (for example a local
+            // deploy) have no licenses.md; show a note instead of panicking.
+            let licenses = gpui::AssetSource::load(&Assets, "licenses.md")
+                .ok()
+                .flatten()
+                .map(|data| Cow::Owned(String::from_utf8_lossy(&data).into_owned()))
+                .unwrap_or(Cow::Borrowed(
+                    "# Dependency licenses\n\nThis build was made without the generated license list. \
+                     Run `script/generate-licenses` before building, or see \
+                     <https://github.com/synthet/zed>.\n",
+                ));
             open_bundled_file(
                 workspace,
-                asset_str::<Assets>("licenses.md"),
+                licenses,
                 "Open Source License Attribution",
                 "Markdown",
                 window,
@@ -1515,6 +1526,9 @@ fn initialize_pane(
     });
 }
 
+const SYNTH_CODE_GPL_URL: &str = "https://github.com/synthet/zed/blob/main/LICENSE-GPL";
+const SYNTH_CODE_APACHE_URL: &str = "https://github.com/synthet/zed/blob/main/LICENSE-APACHE";
+
 fn open_about_window(cx: &mut App) {
     fn about_window_icon(release_channel: ReleaseChannel) -> Arc<Image> {
         let bytes = match release_channel {
@@ -1629,6 +1643,44 @@ fn open_about_window(cx: &mut App) {
                             .child(Label::new(self.full_version.clone()).size(LabelSize::Small)),
                     )
                     .child(
+                        v_flex()
+                            .w_full()
+                            .gap_1()
+                            .items_center()
+                            .child(
+                                h_flex()
+                                    .gap_1()
+                                    .child(Label::new("Licensed under").size(LabelSize::Small))
+                                    .child(
+                                        ButtonLink::new("GPL-3.0-or-later", SYNTH_CODE_GPL_URL)
+                                            .label_size(LabelSize::Small)
+                                            .no_icon(true),
+                                    )
+                                    .child(Label::new("·").size(LabelSize::Small).color(Color::Muted))
+                                    .child(
+                                        ButtonLink::new("Apache-2.0 (GPUI)", SYNTH_CODE_APACHE_URL)
+                                            .label_size(LabelSize::Small)
+                                            .no_icon(true),
+                                    ),
+                            )
+                            .child(
+                                Label::new(
+                                    "Based on Zed. Not affiliated with or endorsed by Zed Industries.",
+                                )
+                                .color(Color::Muted)
+                                .size(LabelSize::XSmall),
+                            )
+                            .child(
+                                Button::new("dependency-licenses", "Dependency Licenses")
+                                    .style(ButtonStyle::Subtle)
+                                    .label_size(LabelSize::Small)
+                                    .on_click(|_, window, cx| {
+                                        cx.dispatch_action(&zed_actions::OpenLicenses);
+                                        window.remove_window();
+                                    }),
+                            ),
+                    )
+                    .child(
                         h_flex()
                             .w_full()
                             .gap_1()
@@ -1701,7 +1753,7 @@ fn open_about_window(cx: &mut App) {
 
     let window_size = Size {
         width: px(440.),
-        height: px(300.),
+        height: px(390.),
     };
 
     cx.open_window(
