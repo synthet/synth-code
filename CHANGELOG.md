@@ -14,6 +14,16 @@ Each release lists the upstream base it was built on.
 
 ## [Unreleased]
 
+### Fixed
+
+- Selected toggle buttons, banners and hints in the 24 bundled Synthet themes were drawn as solid,
+  saturated blocks, because the themes defined no status backgrounds or borders. Each theme now
+  derives translucent ones from its own status colours.
+- The first-launch move of `SynthZed` folders skipped a `SynthCode` folder that already existed,
+  even one created only by a test run, which left the workspace database, threads and extensions
+  behind. A folder without the workspace database (or, for settings, without `settings.json`) is
+  now moved aside as `<name>.pre-migration` and the old folder moved into place.
+
 ## [1.0.0] — 2026-11-19
 
 Upstream base: Zed 1.17.0

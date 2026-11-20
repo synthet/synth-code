@@ -640,29 +640,46 @@ pub fn global_gitignore_path() -> Option<PathBuf> {
 const LEGACY_APP_NAME: &str = "SynthZed";
 
 /// Synth Code fork: moves each per-app folder left by the previous app name ("SynthZed") to its
-/// current location, when the current one does not exist yet. Call it before anything creates
-/// those folders. Returns one line per moved or failed folder, for logging once logging is up.
+/// current location. Call it before anything creates those folders. Returns one line per moved or
+/// failed folder, for logging once logging is up.
+///
+/// A current folder that exists but was never used by a real launch (it lacks the marker below,
+/// for example because a test run created it) is moved aside as `<name>.pre-migration` first.
 pub fn migrate_legacy_app_dirs() -> Vec<String> {
+    // `settings.json` and `db` are written by the first real launch; a folder without them holds
+    // nothing the user made.
+    let config = (config_dir(), Some("settings.json"));
     // A custom data directory is the user's own choice, so only the config folder is migrated.
-    let dirs: Vec<&'static PathBuf> = if CUSTOM_DATA_DIR.get().is_some() {
-        vec![config_dir()]
+    let dirs: Vec<(&'static PathBuf, Option<&str>)> = if CUSTOM_DATA_DIR.get().is_some() {
+        vec![config]
     } else {
         vec![
-            config_dir(),
-            data_dir(),
-            state_dir(),
-            temp_dir(),
-            logs_dir(),
+            config,
+            (data_dir(), Some("db")),
+            (state_dir(), None),
+            (temp_dir(), None),
+            (logs_dir(), None),
         ]
     };
     let mut report = Vec::new();
-    for dir in dirs {
+    for (dir, marker) in dirs {
         let Some(legacy) = legacy_app_dir(dir) else {
             continue;
         };
-        match migrate_dir(&legacy, dir) {
-            Ok(true) => report.push(format!("moved {} to {}", legacy.display(), dir.display())),
-            Ok(false) => {}
+        let had_legacy = legacy.is_dir();
+        match migrate_dir(&legacy, dir, marker) {
+            Ok(aside) => {
+                if let Some(aside) = aside {
+                    report.push(format!(
+                        "set aside the unused {} as {}",
+                        dir.display(),
+                        aside.display()
+                    ));
+                }
+                if had_legacy && !legacy.exists() {
+                    report.push(format!("moved {} to {}", legacy.display(), dir.display()));
+                }
+            }
             Err(error) => report.push(format!(
                 "could not move {} to {}: {error}",
                 legacy.display(),
@@ -671,6 +688,38 @@ pub fn migrate_legacy_app_dirs() -> Vec<String> {
         }
     }
     report
+}
+
+/// Moves `legacy` to `current`. When `current` exists, it is moved aside first only if
+/// `marker` is given and missing from it. Returns where an unused `current` was set aside.
+fn migrate_dir(
+    legacy: &Path,
+    current: &Path,
+    marker: Option<&str>,
+) -> std::io::Result<Option<PathBuf>> {
+    if !legacy.is_dir() {
+        return Ok(None);
+    }
+    let mut aside = None;
+    if current.exists() {
+        let Some(marker) = marker else {
+            return Ok(None);
+        };
+        if current.join(marker).exists() {
+            return Ok(None);
+        }
+        let Some(name) = current.file_name() else {
+            return Ok(None);
+        };
+        let target = current.with_file_name(format!("{}.pre-migration", name.to_string_lossy()));
+        if target.exists() {
+            return Ok(None);
+        }
+        std::fs::rename(current, &target)?;
+        aside = Some(target);
+    }
+    std::fs::rename(legacy, current)?;
+    Ok(aside)
 }
 
 fn legacy_app_dir(dir: &Path) -> Option<PathBuf> {
@@ -683,14 +732,6 @@ fn legacy_app_dir(dir: &Path) -> Option<PathBuf> {
         return None;
     };
     Some(dir.with_file_name(legacy))
-}
-
-fn migrate_dir(legacy: &Path, current: &Path) -> std::io::Result<bool> {
-    if current.exists() || !legacy.is_dir() {
-        return Ok(false);
-    }
-    std::fs::rename(legacy, current)?;
-    Ok(true)
 }
 
 #[cfg(test)]
@@ -710,24 +751,76 @@ mod legacy_migration_tests {
         assert_eq!(legacy_app_dir(Path::new("/root/logs")), None);
     }
 
-    #[test]
-    fn moves_the_legacy_dir_only_when_the_current_one_is_missing() {
-        let root =
-            std::env::temp_dir().join(format!("paths-legacy-migration-{}", std::process::id()));
+    fn scratch_root(name: &str) -> PathBuf {
+        let root = std::env::temp_dir().join(format!(
+            "paths-legacy-migration-{name}-{}",
+            std::process::id()
+        ));
         if root.exists() {
             std::fs::remove_dir_all(&root).unwrap();
         }
+        std::fs::create_dir_all(&root).unwrap();
+        root
+    }
+
+    #[test]
+    fn moves_the_legacy_dir_when_the_current_one_is_missing() {
+        let root = scratch_root("missing");
         let legacy = root.join("SynthZed");
         let current = root.join("SynthCode");
-        std::fs::create_dir_all(&legacy).unwrap();
-        std::fs::write(legacy.join("settings.json"), "{}").unwrap();
+        std::fs::create_dir_all(legacy.join("db")).unwrap();
 
-        assert!(migrate_dir(&legacy, &current).unwrap());
-        assert!(current.join("settings.json").is_file());
+        assert_eq!(migrate_dir(&legacy, &current, Some("db")).unwrap(), None);
+        assert!(current.join("db").is_dir());
         assert!(!legacy.exists());
 
+        std::fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn keeps_a_used_current_dir() {
+        let root = scratch_root("used");
+        let legacy = root.join("SynthZed");
+        let current = root.join("SynthCode");
+        std::fs::create_dir_all(legacy.join("db")).unwrap();
+        std::fs::create_dir_all(current.join("db")).unwrap();
+
+        assert_eq!(migrate_dir(&legacy, &current, Some("db")).unwrap(), None);
+        assert!(legacy.exists());
+        assert!(!root.join("SynthCode.pre-migration").exists());
+
+        // Without a marker, an existing current folder always wins.
+        std::fs::remove_dir_all(current.join("db")).unwrap();
+        assert_eq!(migrate_dir(&legacy, &current, None).unwrap(), None);
+        assert!(legacy.exists());
+
+        std::fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn sets_aside_an_unused_current_dir() {
+        let root = scratch_root("unused");
+        let legacy = root.join("SynthZed");
+        let current = root.join("SynthCode");
+        std::fs::create_dir_all(legacy.join("db")).unwrap();
+        // What a test run leaves behind: a prompts database, but no workspace db.
+        std::fs::create_dir_all(current.join("prompts")).unwrap();
+        std::fs::write(current.join("prompts").join("data.mdb"), "x").unwrap();
+
+        let aside = root.join("SynthCode.pre-migration");
+        assert_eq!(
+            migrate_dir(&legacy, &current, Some("db")).unwrap(),
+            Some(aside.clone())
+        );
+        assert!(current.join("db").is_dir());
+        assert!(aside.join("prompts").join("data.mdb").is_file());
+        assert!(!legacy.exists());
+
+        // A second unused folder never overwrites an earlier one set aside.
         std::fs::create_dir_all(&legacy).unwrap();
-        assert!(!migrate_dir(&legacy, &current).unwrap());
+        std::fs::remove_dir_all(&current).unwrap();
+        std::fs::create_dir_all(&current).unwrap();
+        assert_eq!(migrate_dir(&legacy, &current, Some("db")).unwrap(), None);
         assert!(legacy.exists());
 
         std::fs::remove_dir_all(&root).unwrap();
