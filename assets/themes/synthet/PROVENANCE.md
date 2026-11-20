@@ -100,6 +100,15 @@ Note that the public `base16/base16_solarflare.yaml` is a *different* palette fr
 Solar Flare (`#18262f` / `#a6afb8` against this theme's `#1b1c18` / `#dde6ee`) and is therefore not
 a substitute source for `solar-flare.json`.
 
+## Status tints (all 24 variants)
+
+None of the upstream sources define the translucent backgrounds and borders Zed uses for status
+tints (selected toggle buttons, info/warning/error banners, hints). Missing keys fall back to an
+opaque saturated colour, so every variant derives them from its own status colours: for `error`,
+`warning`, `success`, `info` and `predictive`, `<status>.background` is the colour at alpha
+`1a` (dark) or `26` (light) and `<status>.border` at `4d` (dark) or `66` (light), matching
+the alpha One Dark uses. `hint` reuses the `info` colour. No source colour changes.
+
 ## Not included
 
 - **One Dark Pro** — the file shipped under this name did not match
