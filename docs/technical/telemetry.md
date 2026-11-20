@@ -1,6 +1,6 @@
 ---
 type: Technical Reference
-title: Telemetry (Synth Zed)
+title: Telemetry (Synth Code)
 description: Core product telemetry, crash upload, and Anthropic analytics stay on-box. Warp’s Privacy network log is a different feature and is not in this fork.
 resource: technical/telemetry.md
 tags: [docs, telemetry, privacy, local-first]
@@ -8,7 +8,7 @@ timestamp: 2026-08-15T17:45:00Z
 okf_version: 0.1
 ---
 
-# Telemetry (Synth Zed)
+# Telemetry (Synth Code)
 
 Parent: [technical/INDEX.md](INDEX.md) · Fork deltas: [fork-deltas.md](../architecture/fork-deltas.md)
 
@@ -18,7 +18,7 @@ Upstream product write-up [`src/telemetry.md`](../src/telemetry.md) still descri
 
 ## Not Warp’s network log
 
-Warp Privacy → **View network logging** captures **HTTP request/response** items (in-memory ring, last 50, read-only pane). Synth Zed does **not** have that UI. Zed’s `http_client` has no before/after request hooks.
+Warp Privacy → **View network logging** captures **HTTP request/response** items (in-memory ring, last 50, read-only pane). Synth Code does **not** have that UI. Zed’s `http_client` has no before/after request hooks.
 
 Do **not** copy Warp’s AGPL network-log sources into Zed ([what-not-to-build](../zed-warp/what-not-to-build.md)). A port would be a new issue: hooks on Zed’s client, a bounded in-memory ring, a read-only editor tab.
 

@@ -24,7 +24,7 @@ under [`.agent/backlog/`](../../.agent/backlog/README.md).
 Missing GitHub Projects board IDs are not mandatory for generic projects. Fill them only when using
 [the GitHub Projects provider](../../.agent/backlog/providers/github-projects.md).
 
-## Synth Zed
+## Synth Code
 
 This repository's daily queue is the **Local Markdown** provider:
 [`.agent/backlog/items.md`](../../.agent/backlog/items.md), following

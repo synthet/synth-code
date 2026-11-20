@@ -1,5 +1,5 @@
 {
-  "project": "Synth Zed",
+  "project": "Synth Code",
   "review_date": "2026-07-10",
   "canonical_tree": ".claude",
   "generated_trees": [".cursor", ".agents/skills", ".codex/agents"],

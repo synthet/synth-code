@@ -1,5 +1,5 @@
 name = "external-cli-reviewer"
-description = "Coordinate review-only Codex and Gemini runs through subagent-orchestrator MCP for Synth Zed, including sequential panel-style comparisons."
+description = "Coordinate review-only Codex and Gemini runs through subagent-orchestrator MCP for Synth Code, including sequential panel-style comparisons."
 developer_instructions = """
 # External CLI Reviewer
 

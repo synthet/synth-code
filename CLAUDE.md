@@ -1,4 +1,4 @@
-# Synth Zed — Local-first fork of the Zed editor
+# Synth Code — Local-first fork of the Zed editor
 
 > Agent orientation for this checkout. Engineering commands live in [`AGENTS.md`](AGENTS.md).
 > Always-on Zed Agent coding guidelines live in [`.rules`](.rules). Run
@@ -9,7 +9,7 @@
 
 | Project | Repository | Role |
 |---------|------------|------|
-| Synth Zed (this) | https://github.com/synthet/zed | Local-first Zed editor fork |
+| Synth Code (this) | https://github.com/synthet/zed | Local-first Zed editor fork |
 | synthet-code-framework | sibling `../synthet-code-framework` | Agent scaffold this repo adopted |
 | Upstream Zed | https://github.com/zed-industries/zed | Upstream editor |
 
@@ -47,7 +47,7 @@ stay in-tree, unloaded); BYOK / Copilot / Ollama / ACP remain.
 - [`GEMINI.md`](GEMINI.md) — still a `.rules` pointer for Gemini CLI
 - [`docs/CANONICAL_SOURCES.md`](docs/CANONICAL_SOURCES.md) — authority map
 - [`.agent/SAFETY.md`](.agent/SAFETY.md) — safety rules
-- `.claude/skills/` — canonical skills (framework + Synth Zed domain). Mirrors: `.cursor/skills/`, `.agents/skills/`
+- `.claude/skills/` — canonical skills (framework + Synth Code domain). Mirrors: `.cursor/skills/`, `.agents/skills/`
 
 Author Zed skills under `.claude/skills/` next to framework skills, then sync. Product `script/`
 (singular) is not the framework `scripts/` tree.

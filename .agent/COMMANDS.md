@@ -1,4 +1,4 @@
-# Verified commands — Synth Zed
+# Verified commands — Synth Code
 
 Quick reference of commands known to work in this repo. Keep in sync with `AGENTS.md`.
 

@@ -13,7 +13,7 @@ risk_class: high
 
 Already compiled: deterministic CLIs under `scripts/agent-memory/`. This skill is a bootloader.
 
-Local consolidation for **Synth Zed** — external artifacts only (no model training).
+Local consolidation for **Synth Code** — external artifacts only (no model training).
 
 ## Invoke
 

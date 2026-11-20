@@ -1,7 +1,7 @@
 ---
 type: Documentation Index
 title: Architecture Index
-description: System overview, crate map, and Synth Zed fork deltas.
+description: System overview, crate map, and Synth Code fork deltas.
 resource: architecture/INDEX.md
 tags: [docs, architecture, index]
 timestamp: 2026-08-15T17:45:00Z

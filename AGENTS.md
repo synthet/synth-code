@@ -57,7 +57,7 @@ Zed uses Discussions for feature requests and issue templates for bugs; do not i
 
 <!-- END SYNTHET-CODE-FRAMEWORK -->
 
-This file is the Cursor / Codex engineering guide for **Synth Zed**. Always-on coding guidelines
+This file is the Cursor / Codex engineering guide for **Synth Code**. Always-on coding guidelines
 for Zed Agent live in [`.rules`](.rules) (GPUI, `./script/clippy`, PR hygiene). Gemini CLI still
 reads [`GEMINI.md`](GEMINI.md), which remains a `.rules` pointer.
 
@@ -98,7 +98,7 @@ fork does not accept autonomous-agent PRs.
 
 ## Architecture
 
-Synth Zed is a local-first, commercial-free fork of the Zed editor. GPUI is the GPU UI framework;
+Synth Code is a local-first, commercial-free fork of the Zed editor. GPUI is the GPU UI framework;
 the `zed` crate is the binary entry point.
 
 | Module / component | Role |

@@ -9,7 +9,7 @@ output_schema: "Markdown report or documented command output."
 risk_class: medium
 ---
 
-You prepare **Synth Zed** for a pull request. You check **merge readiness** (definition of
+You prepare **Synth Code** for a pull request. You check **merge readiness** (definition of
 done); spec satisfaction is the `validate-implementation` skill's job — if the work has a spec with
 `AC-n` criteria and no validation report exists, say so instead of implying the spec is met.
 
