@@ -13,7 +13,7 @@ value is exactly the image base, which is never a meaningful pointer.
 Usage:
     script/check-unresolved-pointers.py [path-to-exe]
 
-Defaults to target/release/zed.exe. Exits non-zero if any unresolved slot is
+Defaults to target/release/synth-code.exe. Exits non-zero if any unresolved slot is
 found.
 """
 
@@ -88,7 +88,7 @@ class Image:
 
 
 def main():
-    path = Path(sys.argv[1] if len(sys.argv) > 1 else "target/release/zed.exe")
+    path = Path(sys.argv[1] if len(sys.argv) > 1 else "target/release/synth-code.exe")
     if not path.is_file():
         print(f"error: {path} not found", file=sys.stderr)
         return 2

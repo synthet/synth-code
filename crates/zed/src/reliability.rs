@@ -19,21 +19,18 @@ pub fn init(client: Arc<Client>, workspace_store: Entity<WorkspaceStore>, cx: &m
     hang_detection::start(client.clone(), cx);
     start_memory_usage_logging(workspace_store, cx);
 
-    cx.on_flags_ready({
-        let client = client.clone();
-        move |flags_ready, cx| {
-            if flags_ready.is_staff {
-                let client = client.clone();
-                cx.background_spawn(async move {
-                    upload_build_timings(client).await.warn_on_err();
-                })
-                .detach();
-            }
+    cx.on_flags_ready(move |flags_ready, cx| {
+        if flags_ready.is_staff {
+            let client = client.clone();
+            cx.background_spawn(async move {
+                upload_build_timings(client).await.warn_on_err();
+            })
+            .detach();
         }
     })
     .detach();
 
-    // Synth Zed: never upload minidumps or remote crash files.
+    // Synth Code: never upload minidumps or remote crash files.
 }
 
 const MEMORY_USAGE_POLL_INTERVAL: Duration = Duration::from_secs(30);
@@ -175,13 +172,13 @@ fn log_worktree_diagnostics(workspace_store: &Entity<WorkspaceStore>, cx: &App) 
     }
 }
 
-#[allow(dead_code)] // Synth Zed: caller stubbed out; kept so upstream diffs stay small.
+#[allow(dead_code)] // Synth Code: caller stubbed out; kept so upstream diffs stay small.
 pub async fn upload_previous_minidumps(_client: Arc<Client>) -> anyhow::Result<()> {
-    // Synth Zed: never upload minidumps / Sentry payloads.
+    // Synth Code: never upload minidumps / Sentry payloads.
     Ok(())
 }
 
 async fn upload_build_timings(_client: Arc<Client>) -> Result<()> {
-    // Synth Zed: do not upload build timings to Zed.
+    // Synth Code: do not upload build timings to Zed.
     Ok(())
 }

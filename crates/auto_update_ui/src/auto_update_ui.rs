@@ -47,7 +47,7 @@ pub fn init(cx: &mut App) {
     .detach();
 }
 
-// Synth Zed fork: release notes are not fetched from zed.dev's release-notes API (it describes
+// Synth Code fork: release notes are not fetched from zed.dev's release-notes API (it describes
 // upstream builds); they open in the browser at the fork's releases page instead.
 fn view_release_notes_locally(
     _workspace: &mut Workspace,

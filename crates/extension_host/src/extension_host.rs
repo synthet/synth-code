@@ -73,7 +73,7 @@ const FS_WATCH_LATENCY: Duration = Duration::from_millis(100);
 
 /// The public extension catalog.
 ///
-/// Synth Zed fork: the catalog is a free OSS index, so it is pinned here instead
+/// Synth Code fork: the catalog is a free OSS index, so it is pinned here instead
 /// of being derived from `server_url`, which the fork points at a localhost
 /// placeholder (no hosted zed.dev account or collab services).
 const EXTENSIONS_API_URL: &str = "https://api.zed.dev";

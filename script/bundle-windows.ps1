@@ -56,7 +56,7 @@ if ($Help) {
     exit 0
 }
 
-# Synth Zed ships one channel, so bundles are stable unless ZED_RELEASE_CHANNEL
+# Synth Code ships one channel, so bundles are stable unless ZED_RELEASE_CHANNEL
 # overrides it. crates/zed/RELEASE_CHANNEL stays "dev" so that `cargo run` keeps its
 # own data, credentials and instance lock.
 $channel = if ($env:ZED_RELEASE_CHANNEL) { $env:ZED_RELEASE_CHANNEL } else { "stable" }
@@ -149,10 +149,10 @@ function CheckUnresolvedPointers($exePath) {
 
 function BuildZedAndItsFriends {
     Write-Output "Building Zed and its friends, for channel: $channel"
-    # Build zed.exe, cli.exe and auto_update_helper.exe
+    # Build synth-code.exe, cli.exe and auto_update_helper.exe
     cargo build --release --package zed --package cli --package auto_update_helper --target $target
-    CheckUnresolvedPointers ".\$CargoOutDir\zed.exe"
-    Copy-Item -Path ".\$CargoOutDir\zed.exe" -Destination "$innoDir\Zed.exe" -Force
+    CheckUnresolvedPointers ".\$CargoOutDir\synth-code.exe"
+    Copy-Item -Path ".\$CargoOutDir\synth-code.exe" -Destination "$innoDir\synth-code.exe" -Force
     Copy-Item -Path ".\$CargoOutDir\cli.exe" -Destination "$innoDir\cli.exe" -Force
     Copy-Item -Path ".\$CargoOutDir\auto_update_helper.exe" -Destination "$innoDir\auto_update_helper.exe" -Force
     # Build explorer_command_injector.dll
@@ -191,7 +191,7 @@ function BuildRemoteServer {
 
 function ZipZedAndItsFriendsDebug {
     $items = @(
-        ".\$CargoOutDir\zed.pdb",
+        ".\$CargoOutDir\synth-code.pdb",
         ".\$CargoOutDir\cli.pdb",
         ".\$CargoOutDir\auto_update_helper.pdb",
         ".\$CargoOutDir\explorer_command_injector.pdb",
@@ -253,7 +253,7 @@ function SignZedAndItsFriends {
         return
     }
 
-    $files = "$innoDir\Zed.exe,$innoDir\cli.exe,$innoDir\auto_update_helper.exe,$innoDir\zed_explorer_command_injector.dll,$innoDir\zed_explorer_command_injector.appx"
+    $files = "$innoDir\synth-code.exe,$innoDir\cli.exe,$innoDir\auto_update_helper.exe,$innoDir\zed_explorer_command_injector.dll,$innoDir\zed_explorer_command_injector.appx"
     & "$innoDir\sign.ps1" $files
 }
 
@@ -277,8 +277,8 @@ function DownloadConpty {
 function CollectFiles {
     Move-Item -Path "$innoDir\zed_explorer_command_injector.appx" -Destination "$innoDir\appx\zed_explorer_command_injector.appx" -Force
     Move-Item -Path "$innoDir\zed_explorer_command_injector.dll" -Destination "$innoDir\appx\zed_explorer_command_injector.dll" -Force
-    Move-Item -Path "$innoDir\cli.exe" -Destination "$innoDir\bin\zed.exe" -Force
-    Move-Item -Path "$innoDir\zed.sh" -Destination "$innoDir\bin\zed" -Force
+    Move-Item -Path "$innoDir\cli.exe" -Destination "$innoDir\bin\scode.exe" -Force
+    Move-Item -Path "$innoDir\zed.sh" -Destination "$innoDir\bin\scode" -Force
     Move-Item -Path "$innoDir\auto_update_helper.exe" -Destination "$innoDir\tools\auto_update_helper.exe" -Force
     if($Architecture -eq "aarch64") {
         New-Item -Type Directory -Path "$innoDir\arm64" -Force
@@ -299,64 +299,73 @@ function BuildInstaller {
     $issFilePath = "$innoDir\zed.iss"
     switch ($channel) {
         "stable" {
-            # Synth Zed identity: none of these may match upstream Zed, or the installer
-            # would upgrade, lock against, or unregister a real Zed install.
             $appId = "{{9643A47E-3FC1-44C0-8B73-8B8145952726}"
             $appIconName = "app-icon"
-            $appName = "Synth Zed"
-            $appDisplayName = "Synth Zed"
-            $appSetupName = "Zed-$Architecture"
-            # The mutex name here should match app_identifier() in crates\release_channel\src\lib.rs
-            $appMutex = "SynthZed-Editor-Stable-Instance-Mutex"
-            $appExeName = "Zed"
-            # "<regValueName>ContextMenu" must match REG_PATH in crates\explorer_command_injector
-            $regValueName = "SynthZed"
-            $appUserId = "io.github.synthet.Zed"
-            $appShellNameShort = "Synth Z&ed"
-            # Identity Name in crates\explorer_command_injector\AppxManifest.xml; the publisher hash is unchanged
-            $appAppxFullName = "io.github.synthet.Zed_1.0.0.0_neutral__japxn1gcva8rg"
+            $appName = "SynthCode"
+            $appDisplayName = "Synth Code"
+            $appSetupName = "SynthCode-$Architecture"
+            # The mutex name here should match the mutex name in crates\zed\src\zed\windows_only_instance.rs
+            # Matches release_channel::app_identifier() (SynthCode-Editor-<Channel>).
+            $appMutex = "SynthCode-Editor-Stable-Instance-Mutex"
+            $appExeName = "synth-code"
+            $regValueName = "SynthCode"
+            # Matches release_channel::ReleaseChannel::app_id().
+            $appUserId = "io.github.synthet.code"
+            $appShellNameShort = "&Synth Code"
+            # <Identity Name>_<Version>_neutral__<publisher id> of the packed AppxManifest.
+            $appAppxFullName = "io.github.synthet.code_1.0.0.0_neutral__sf53jghbjpg0w"
         }
         "preview" {
-            $appId = "{{F70E4811-D0E2-4D88-AC99-D63752799F95}"
+            $appId = "{{DEF190E6-680A-48C8-BE92-5C2DB998C50E}"
             $appIconName = "app-icon-preview"
-            $appName = "Zed Preview"
-            $appDisplayName = "Zed Preview"
-            $appSetupName = "Zed-$Architecture"
+            $appName = "SynthCode Preview"
+            $appDisplayName = "Synth Code Preview"
+            $appSetupName = "SynthCode-$Architecture"
             # The mutex name here should match the mutex name in crates\zed\src\zed\windows_only_instance.rs
-            $appMutex = "Zed-Preview-Instance-Mutex"
-            $appExeName = "Zed"
-            $regValueName = "ZedPreview"
-            $appUserId = "ZedIndustries.Zed.Preview"
-            $appShellNameShort = "Z&ed Preview"
-            $appAppxFullName = "ZedIndustries.Zed.Preview_1.0.0.0_neutral__japxn1gcva8rg"
+            # Matches release_channel::app_identifier() (SynthCode-Editor-<Channel>).
+            $appMutex = "SynthCode-Editor-Preview-Instance-Mutex"
+            $appExeName = "synth-code"
+            $regValueName = "SynthCodePreview"
+            # Matches release_channel::ReleaseChannel::app_id().
+            $appUserId = "io.github.synthet.code-preview"
+            $appShellNameShort = "&Synth Code Preview"
+            # <Identity Name>_<Version>_neutral__<publisher id> of the packed AppxManifest.
+            $appAppxFullName = "io.github.synthet.code-preview_1.0.0.0_neutral__sf53jghbjpg0w"
         }
         "nightly" {
-            $appId = "{{1BDB21D3-14E7-433C-843C-9C97382B2FE0}"
+            $appId = "{{C059B284-A973-4AF6-8CB0-339BBF64BFAA}"
             $appIconName = "app-icon-nightly"
-            $appName = "Zed Nightly"
-            $appDisplayName = "Zed Nightly"
-            $appSetupName = "Zed-$Architecture"
+            $appName = "SynthCode Nightly"
+            $appDisplayName = "Synth Code Nightly"
+            $appSetupName = "SynthCode-$Architecture"
             # The mutex name here should match the mutex name in crates\zed\src\zed\windows_only_instance.rs
-            $appMutex = "Zed-Nightly-Instance-Mutex"
-            $appExeName = "Zed"
-            $regValueName = "ZedNightly"
-            $appUserId = "ZedIndustries.Zed.Nightly"
-            $appShellNameShort = "Z&ed Editor Nightly"
-            $appAppxFullName = "ZedIndustries.Zed.Nightly_1.0.0.0_neutral__japxn1gcva8rg"
+            # Matches release_channel::app_identifier() (SynthCode-Editor-<Channel>).
+            $appMutex = "SynthCode-Editor-Nightly-Instance-Mutex"
+            $appExeName = "synth-code"
+            $regValueName = "SynthCodeNightly"
+            # Matches release_channel::ReleaseChannel::app_id().
+            $appUserId = "io.github.synthet.code-nightly"
+            $appShellNameShort = "&Synth Code Nightly"
+            # <Identity Name>_<Version>_neutral__<publisher id> of the packed AppxManifest.
+            $appAppxFullName = "io.github.synthet.code-nightly_1.0.0.0_neutral__sf53jghbjpg0w"
         }
         "dev" {
-            $appId = "{{8357632E-24A4-4F32-BA97-E575B4D1FE5D}"
+            $appId = "{{0E56EB76-86DB-417B-B1AA-1F8E090EF415}"
             $appIconName = "app-icon-dev"
-            $appName = "Zed Dev"
-            $appDisplayName = "Zed Dev"
-            $appSetupName = "Zed-$Architecture"
+            $appName = "SynthCode Dev"
+            $appDisplayName = "Synth Code Dev"
+            $appSetupName = "SynthCode-$Architecture"
             # The mutex name here should match the mutex name in crates\zed\src\zed\windows_only_instance.rs
-            $appMutex = "Zed-Dev-Instance-Mutex"
-            $appExeName = "Zed"
-            $regValueName = "ZedDev"
-            $appUserId = "ZedIndustries.Zed.Dev"
-            $appShellNameShort = "Z&ed Dev"
-            $appAppxFullName = "ZedIndustries.Zed.Dev_1.0.0.0_neutral__japxn1gcva8rg"
+            # Matches release_channel::app_identifier() (SynthCode-Editor-<Channel>).
+            $appMutex = "SynthCode-Editor-Dev-Instance-Mutex"
+            $appExeName = "synth-code"
+            $regValueName = "SynthCodeDev"
+            # Matches release_channel::ReleaseChannel::app_id().
+            $appUserId = "io.github.synthet.code-dev"
+            $appShellNameShort = "&Synth Code Dev"
+            # dev packs AppxManifest-Nightly.xml (see MakeAppx), so it shares the Nightly package identity.
+            # <Identity Name>_<Version>_neutral__<publisher id> of the packed AppxManifest.
+            $appAppxFullName = "io.github.synthet.code-nightly_1.0.0.0_neutral__sf53jghbjpg0w"
         }
         default {
             Write-Error "can't bundle installer for $channel."

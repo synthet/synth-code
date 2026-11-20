@@ -14,6 +14,38 @@ Each release lists the upstream base it was built on.
 
 ## [Unreleased]
 
+## [1.0.0] — 2026-11-19
+
+Upstream base: Zed 1.17.0
+
+### Changed
+
+- **Breaking:** the product is renamed from Synth Zed to Synth Code. The editor binary is
+  `synth-code`, the CLI is `scode`, the URL schemes are `synthcode://` and `synthcode-cli://`
+  (`synthzed://` links no longer open the app), and the app ID is `io.github.synthet.code`.
+- **Breaking:** settings and data live in `SynthCode` folders (`%APPDATA%\SynthCode`,
+  `%LOCALAPPDATA%\SynthCode`, `~/.config/synthcode`), apart from official Zed's. Folders left by
+  Synth Zed builds are moved there on first launch.
+- The Windows installer and macOS disk image show a Synth Code license notice that points to the
+  GPL-3.0-or-later and Apache-2.0 licenses, instead of Zed Industries' Terms of Service.
+- The Windows installer keeps the stable identity released in 0.3.0, so it upgrades a Synth Zed
+  install in place, and installs `synth-code.exe` into a `SynthCode` folder.
+  `script/deploy-windows.ps1` installs into `%LOCALAPPDATA%\Programs\SynthCode` instead of
+  overlaying an official Zed install.
+- New app, document and in-product icon: a silver window frame around `</>`.
+- The macOS app menu, About window, welcome and onboarding headlines, Settings window title and
+  Windows file details say Synth Code.
+
+### Removed
+
+- Help menu items that sent users to Zed Industries: File Bug Report, Request Feature, Email Us
+  and Zed Twitter. The repository item opens `synthet/zed`.
+
+### Fixed
+
+- Skill share links and the Settings "Copy Link" button produced `zed://` links that opened
+  official Zed. They now use `synthcode://`.
+
 ## [0.3.1] — 2026-11-16
 
 Upstream base: Zed 1.17.0

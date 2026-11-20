@@ -57,9 +57,9 @@ Incremental cache under `target/debug/incremental` is enough to resume after a k
 
 ## Output
 
-Debug binary: `target/debug/zed.exe`. Linker `LNK4217` and garbled “creating library” lines on a non-Latin Windows locale are warnings.
+Debug binary: `target/debug/synth-code.exe`. Linker `LNK4217` and garbled “creating library” lines on a non-Latin Windows locale are warnings.
 
-App ids: `SynthZed-Editor-*`. General cargo/clippy/nextest: [local-build.md](local-build.md).
+App ids: `SynthCode-Editor-*`. General cargo/clippy/nextest: [local-build.md](local-build.md).
 
 ## Release-channel builds
 
@@ -91,7 +91,7 @@ Check both halves agree before installing an EXE - the resource and the runtime 
 different variables and can disagree:
 
 ```powershell
-(Get-Item target/x86_64-pc-windows-msvc/release/zed.exe).VersionInfo |
+(Get-Item target/x86_64-pc-windows-msvc/release/synth-code.exe).VersionInfo |
     Select-Object ProductName, ProductVersion
 ```
 
@@ -107,7 +107,7 @@ RVA 0. Calling through one dies with `0xc0000005` at the image base.
 `bundle-windows.ps1` runs it before copying the EXE and throws on a nonzero exit.
 
 ```powershell
-python script/check-unresolved-pointers.py target/x86_64-pc-windows-msvc/release/zed.exe
+python script/check-unresolved-pointers.py target/x86_64-pc-windows-msvc/release/synth-code.exe
 ```
 
 This caught the 1.17.0 stable startup crash. `lto = "thin"` internalized the `wasmtime-c-api-impl`

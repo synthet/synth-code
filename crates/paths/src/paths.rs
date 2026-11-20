@@ -15,7 +15,7 @@ pub const EDITORCONFIG_NAME: &str = ".editorconfig";
 /// and state directory paths.
 ///
 /// Forks should change this to avoid colliding with Zed's user data.
-pub const APP_NAME: &str = "Zed";
+pub const APP_NAME: &str = "SynthCode";
 
 /// Lowercased form of [`APP_NAME`], for use in XDG-style paths on
 /// Linux/FreeBSD and the macOS `~/.config` fallback.
@@ -53,16 +53,16 @@ static CUSTOM_DATA_DIR: OnceLock<PathBuf> = OnceLock::new();
 
 /// The resolved data directory, combining custom override or platform defaults.
 /// This is set once and cached for subsequent calls.
-/// On macOS, this is `~/Library/Application Support/Zed`.
-/// On Linux/FreeBSD, this is `$XDG_DATA_HOME/zed`.
-/// On Windows, this is `%LOCALAPPDATA%\Zed`.
+/// On macOS, this is `~/Library/Application Support/SynthCode`.
+/// On Linux/FreeBSD, this is `$XDG_DATA_HOME/synthcode`.
+/// On Windows, this is `%LOCALAPPDATA%\SynthCode`.
 static CURRENT_DATA_DIR: OnceLock<PathBuf> = OnceLock::new();
 
 /// The resolved config directory, combining custom override or platform defaults.
 /// This is set once and cached for subsequent calls.
-/// On macOS, this is `~/.config/zed`.
-/// On Linux/FreeBSD, this is `$XDG_CONFIG_HOME/zed`.
-/// On Windows, this is `%APPDATA%\Zed`.
+/// On macOS, this is `~/.config/synthcode`.
+/// On Linux/FreeBSD, this is `$XDG_CONFIG_HOME/synthcode`.
+/// On Windows, this is `%APPDATA%\SynthCode`.
 static CONFIG_DIR: OnceLock<PathBuf> = OnceLock::new();
 
 /// Returns the relative path to the zed_server directory on the ssh host.
@@ -242,13 +242,13 @@ pub fn remote_server_state_dir() -> &'static PathBuf {
     REMOTE_SERVER_STATE.get_or_init(|| data_dir().join("server_state"))
 }
 
-/// Returns the path to the `Zed.log` file.
+/// Returns the path to the `SynthCode.log` file.
 pub fn log_file() -> &'static PathBuf {
     static LOG_FILE: OnceLock<PathBuf> = OnceLock::new();
     LOG_FILE.get_or_init(|| logs_dir().join(format!("{}.log", APP_NAME)))
 }
 
-/// Returns the path to the `Zed.log.old` file.
+/// Returns the path to the `SynthCode.log.old` file.
 pub fn old_log_file() -> &'static PathBuf {
     static OLD_LOG_FILE: OnceLock<PathBuf> = OnceLock::new();
     OLD_LOG_FILE.get_or_init(|| logs_dir().join(format!("{}.log.old", APP_NAME)))
@@ -634,4 +634,102 @@ pub fn global_gitignore_path() -> Option<PathBuf> {
     GLOBAL_GITIGNORE_PATH
         .get_or_init(::ignore::gitignore::gitconfig_excludes_path)
         .clone()
+}
+
+/// Synth Code fork: the previous app name. Its folders are moved on first launch.
+const LEGACY_APP_NAME: &str = "SynthZed";
+
+/// Synth Code fork: moves each per-app folder left by the previous app name ("SynthZed") to its
+/// current location, when the current one does not exist yet. Call it before anything creates
+/// those folders. Returns one line per moved or failed folder, for logging once logging is up.
+pub fn migrate_legacy_app_dirs() -> Vec<String> {
+    // A custom data directory is the user's own choice, so only the config folder is migrated.
+    let dirs: Vec<&'static PathBuf> = if CUSTOM_DATA_DIR.get().is_some() {
+        vec![config_dir()]
+    } else {
+        vec![
+            config_dir(),
+            data_dir(),
+            state_dir(),
+            temp_dir(),
+            logs_dir(),
+        ]
+    };
+    let mut report = Vec::new();
+    for dir in dirs {
+        let Some(legacy) = legacy_app_dir(dir) else {
+            continue;
+        };
+        match migrate_dir(&legacy, dir) {
+            Ok(true) => report.push(format!("moved {} to {}", legacy.display(), dir.display())),
+            Ok(false) => {}
+            Err(error) => report.push(format!(
+                "could not move {} to {}: {error}",
+                legacy.display(),
+                dir.display()
+            )),
+        }
+    }
+    report
+}
+
+fn legacy_app_dir(dir: &Path) -> Option<PathBuf> {
+    let name = dir.file_name()?.to_str()?;
+    let legacy = if name == APP_NAME {
+        LEGACY_APP_NAME.to_string()
+    } else if name == APP_NAME_LOWERCASE {
+        LEGACY_APP_NAME.to_ascii_lowercase()
+    } else {
+        return None;
+    };
+    Some(dir.with_file_name(legacy))
+}
+
+fn migrate_dir(legacy: &Path, current: &Path) -> std::io::Result<bool> {
+    if current.exists() || !legacy.is_dir() {
+        return Ok(false);
+    }
+    std::fs::rename(legacy, current)?;
+    Ok(true)
+}
+
+#[cfg(test)]
+mod legacy_migration_tests {
+    use super::*;
+
+    #[test]
+    fn maps_app_dir_names_to_the_legacy_ones() {
+        assert_eq!(
+            legacy_app_dir(Path::new("/root/SynthCode")),
+            Some(PathBuf::from("/root/SynthZed"))
+        );
+        assert_eq!(
+            legacy_app_dir(Path::new("/root/synthcode")),
+            Some(PathBuf::from("/root/synthzed"))
+        );
+        assert_eq!(legacy_app_dir(Path::new("/root/logs")), None);
+    }
+
+    #[test]
+    fn moves_the_legacy_dir_only_when_the_current_one_is_missing() {
+        let root =
+            std::env::temp_dir().join(format!("paths-legacy-migration-{}", std::process::id()));
+        if root.exists() {
+            std::fs::remove_dir_all(&root).unwrap();
+        }
+        let legacy = root.join("SynthZed");
+        let current = root.join("SynthCode");
+        std::fs::create_dir_all(&legacy).unwrap();
+        std::fs::write(legacy.join("settings.json"), "{}").unwrap();
+
+        assert!(migrate_dir(&legacy, &current).unwrap());
+        assert!(current.join("settings.json").is_file());
+        assert!(!legacy.exists());
+
+        std::fs::create_dir_all(&legacy).unwrap();
+        assert!(!migrate_dir(&legacy, &current).unwrap());
+        assert!(legacy.exists());
+
+        std::fs::remove_dir_all(&root).unwrap();
+    }
 }

@@ -102,7 +102,7 @@ fi
 # Binary
 # mkdir -p "${zed_dir}/bin" "${zed_dir}/libexec"
 # cp "${target_dir}/${target_triple}/release/zed" "${zed_dir}/libexec/zed-editor"
-# cp "${target_dir}/${target_triple}/release/cli" "${zed_dir}/bin/zed"
+# cp "${target_dir}/${target_triple}/release/cli" "${zed_dir}/bin/scode"
 
 # Libs
 # find_libs() {
@@ -123,7 +123,7 @@ fi
 
 # .desktop
 # export DO_STARTUP_NOTIFY="true"
-# export APP_CLI="zed"
+# export APP_CLI="scode"
 # export APP_ICON="zed"
 # export APP_ARGS="%U"
 # if [[ "$channel" == "preview" ]]; then

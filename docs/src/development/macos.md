@@ -52,7 +52,7 @@ For a release build:
 cargo run --release
 ```
 
-`cargo run` builds the Dev channel ("Synth Zed Dev"), which keeps its own database, stores credentials in a plaintext file, and runs alongside an installed copy. To build an installable app, run `script/bundle-mac`. It bundles the stable channel ("Synth Zed") unless you set `ZED_RELEASE_CHANNEL`.
+`cargo run` builds the Dev channel ("Synth Code Dev"), which keeps its own database, stores credentials in a plaintext file, and runs alongside an installed copy. To build an installable app, run `script/bundle-mac`. It bundles the stable channel ("Synth Code") unless you set `ZED_RELEASE_CHANNEL`.
 
 And to run the tests:
 

@@ -9,10 +9,7 @@ Param(
     [string]$Channel = "stable",
     [Parameter()][Alias('a')][string]$Architecture,
     [Parameter()][string]$InstallDir,
-    [Parameter()][switch]$PinWinget,
-    [Parameter()][switch]$NoPinWinget,
-    [Parameter()][switch]$Backup,
-    [Parameter()][switch]$NoBackup,
+    [Parameter()][switch]$NoShortcut,
     [Parameter()][switch]$Force,
     [Parameter()][int]$Jobs
 )
@@ -26,24 +23,20 @@ function Show-DeployWindowsHelp {
     Write-Output @"
 Usage: deploy-windows.ps1 [-NoBuild] [-Launch] [-Channel <channel>] [-Architecture <arch>] [-InstallDir <path>] [-Force] [-WhatIf] [-Help]
 
-Build Synth Zed and overlay the existing per-user Windows install
-(%LOCALAPPDATA%\Programs\Zed by default). Leaves the official uninstaller
-and Explorer Appx package in place.
+Build Synth Code and install it into its own per-user folder
+(%LOCALAPPDATA%\Programs\SynthCode by default), side by side with any
+official Zed install. Official Zed's folder, processes and winget package are
+not touched.
 
 Options:
-  -Build               Build before overlaying (default).
-  -NoBuild             Overlay the last release artifacts without building.
-  -Launch              Start Zed.exe after a successful overlay.
+  -Build               Build before deploying (default).
+  -NoBuild             Deploy the last release artifacts without building.
+  -Launch              Start synth-code.exe after a successful deploy.
   -Channel             Release channel compiled into the binaries (default: stable).
   -Architecture, -a    x86_64 or aarch64 (default: host architecture).
-  -InstallDir          Overlay destination (default: %LOCALAPPDATA%\Programs\Zed).
-  -PinWinget           Pin winget package ZedIndustries.Zed (also the default
-                       when that package is installed and not already pinned).
-  -NoPinWinget         Do not pin winget.
-  -Backup              Copy the current install to <InstallDir>.official-backup
-                       (also the default when that backup does not exist yet).
-  -NoBackup            Do not copy a backup.
-  -Force               Overlay even if the destination does not look like Zed.
+  -InstallDir          Destination (default: %LOCALAPPDATA%\Programs\SynthCode).
+  -NoShortcut          Do not create the "Synth Code" Start menu shortcut.
+  -Force               Deploy even into a non-empty folder without synth-code.exe.
   -Jobs                Cargo parallel jobs (default: 2). Raise this on machines
                        with plenty of RAM; thin LTO can crash rustc otherwise.
   -WhatIf              Print actions without stopping processes or writing files.
@@ -65,12 +58,6 @@ if ($Help) {
 if ($Build -and $NoBuild) {
     throw "Use only one of -Build and -NoBuild."
 }
-if ($PinWinget -and $NoPinWinget) {
-    throw "Use only one of -PinWinget and -NoPinWinget."
-}
-if ($Backup -and $NoBackup) {
-    throw "Use only one of -Backup and -NoBackup."
-}
 
 $shouldBuild = -not $NoBuild
 $hostArch = Get-ZedWindowsArch
@@ -85,12 +72,11 @@ $triple = Get-ZedWindowsTargetTriple -Arch $Architecture
 $crossCompile = $Architecture -ne $hostArch
 $repoRoot = Get-ZedRepoRoot
 if (-not $InstallDir) {
-    $InstallDir = Join-Path $env:LOCALAPPDATA "Programs\Zed"
+    $InstallDir = Join-Path $env:LOCALAPPDATA "Programs\SynthCode"
 }
 $InstallDir = [System.IO.Path]::GetFullPath($InstallDir)
-$backupDir = "$InstallDir.official-backup"
-$zedDest = Join-Path $InstallDir "Zed.exe"
-$cliDest = Join-Path $InstallDir "bin\zed.exe"
+$zedDest = Join-Path $InstallDir "synth-code.exe"
+$cliDest = Join-Path $InstallDir "bin\scode.exe"
 $helperDest = Join-Path $InstallDir "tools\auto_update_helper.exe"
 
 function Get-ZedReleaseOutDir {
@@ -99,10 +85,10 @@ function Get-ZedReleaseOutDir {
     if ($crossCompile) {
         return $tripleOut
     }
-    if (Test-Path -LiteralPath (Join-Path $hostOut "zed.exe")) {
+    if (Test-Path -LiteralPath (Join-Path $hostOut "synth-code.exe")) {
         return $hostOut
     }
-    if (Test-Path -LiteralPath (Join-Path $tripleOut "zed.exe")) {
+    if (Test-Path -LiteralPath (Join-Path $tripleOut "synth-code.exe")) {
         return $tripleOut
     }
     $hostOut
@@ -111,7 +97,13 @@ function Get-ZedReleaseOutDir {
 function Test-ZedInstallLayout {
     param([string]$Dir)
 
-    Test-Path -LiteralPath (Join-Path $Dir "Zed.exe")
+    if (-not (Test-Path -LiteralPath $Dir)) {
+        return $true
+    }
+    if (Test-Path -LiteralPath (Join-Path $Dir "synth-code.exe")) {
+        return $true
+    }
+    @(Get-ChildItem -LiteralPath $Dir -Force).Count -eq 0
 }
 
 function Test-ZedFileUnlocked {
@@ -136,17 +128,20 @@ function Test-ZedFileUnlocked {
 }
 
 function Stop-ZedProcesses {
-    $names = @("Zed", "zed")
-    $procs = @(Get-Process -Name $names -ErrorAction SilentlyContinue)
+    # Only stop processes started from this install, so official Zed keeps running.
+    $prefix = $InstallDir.TrimEnd("\") + "\"
+    $procs = @(Get-Process -ErrorAction SilentlyContinue | Where-Object {
+            $_.Path -and $_.Path.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)
+        })
     if ($procs.Count -eq 0) {
-        Write-Host "No running Zed process."
+        Write-Host "No running Synth Code process."
         return
     }
     $ids = ($procs | ForEach-Object { $_.Id }) -join ", "
-    if (-not $PSCmdlet.ShouldProcess("Zed processes ($ids)", "Stop")) {
+    if (-not $PSCmdlet.ShouldProcess("Synth Code processes ($ids)", "Stop")) {
         return
     }
-    Write-Host "Stopping Zed processes: $ids"
+    Write-Host "Stopping Synth Code processes: $ids"
     $procs | Stop-Process -Force
 }
 
@@ -207,75 +202,35 @@ function Copy-ZedFileWithRetry {
     throw "Failed to copy $Source to $Destination : $($lastError.Exception.Message)"
 }
 
-function Copy-ZedInstallBackup {
-    param([string]$Source, [string]$Destination)
-
-    if (Test-Path -LiteralPath $Destination) {
-        Write-Host "Backup already exists at $Destination"
-        return
-    }
-    if (-not $PSCmdlet.ShouldProcess($Destination, "Backup $Source")) {
-        return
-    }
-    Write-Host "Backing up $Source -> $Destination"
-    Copy-Item -LiteralPath $Source -Destination $Destination -Recurse -Force
-}
-
-function Test-ZedWingetPinned {
-    if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-        return $false
-    }
-    $previous = $PSNativeCommandUseErrorActionPreference
-    $PSNativeCommandUseErrorActionPreference = $false
-    try {
-        $output = winget pin list 2>&1 | Out-String
-        return [bool]($output -match 'ZedIndustries\.Zed')
-    }
-    finally {
-        $PSNativeCommandUseErrorActionPreference = $previous
-    }
-}
-
-function Test-ZedWingetInstalled {
-    if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-        return $false
-    }
-    $previous = $PSNativeCommandUseErrorActionPreference
-    $PSNativeCommandUseErrorActionPreference = $false
-    try {
-        $output = winget list -e --id ZedIndustries.Zed 2>&1 | Out-String
-        return [bool]($output -match 'ZedIndustries\.Zed')
-    }
-    finally {
-        $PSNativeCommandUseErrorActionPreference = $previous
-    }
-}
-
-function Add-ZedWingetPin {
-    if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-        Write-Host "winget not found; skipping pin."
-        return
-    }
-    if (Test-ZedWingetPinned) {
-        Write-Host "winget package ZedIndustries.Zed is already pinned."
-        return
-    }
-    if (-not $PSCmdlet.ShouldProcess("ZedIndustries.Zed", "winget pin add")) {
-        Write-Host "Would pin winget package ZedIndustries.Zed"
-        return
-    }
-    Write-Host "Pinning winget package ZedIndustries.Zed"
-    $previous = $PSNativeCommandUseErrorActionPreference
-    $PSNativeCommandUseErrorActionPreference = $false
-    try {
-        winget pin add --id ZedIndustries.Zed --accept-source-agreements
-        if ($null -ne $LASTEXITCODE -and $LASTEXITCODE -ne 0) {
-            throw "winget pin add failed with exit code $LASTEXITCODE"
+function Copy-ZedRuntimeFiles {
+    # A fresh folder lacks the ConPTY / AGS runtime files that the installer bundles.
+    # Copy them from the official install (read-only there) when they are missing here.
+    $official = Join-Path $env:LOCALAPPDATA "Programs\Zed"
+    foreach ($relative in @("conpty.dll", "amd_ags_x64.dll", "x64\OpenConsole.exe", "arm64\OpenConsole.exe")) {
+        $source = Join-Path $official $relative
+        $destination = Join-Path $InstallDir $relative
+        if ((Test-Path -LiteralPath $source) -and -not (Test-Path -LiteralPath $destination)) {
+            Copy-ZedFileWithRetry -Source $source -Destination $destination
         }
     }
-    finally {
-        $PSNativeCommandUseErrorActionPreference = $previous
+}
+
+function New-ZedStartMenuShortcut {
+    $programs = [Environment]::GetFolderPath("Programs")
+    $link = Join-Path $programs "Synth Code.lnk"
+    if (Test-Path -LiteralPath $link) {
+        Write-Host "Start menu shortcut already exists at $link"
+        return
     }
+    if (-not $PSCmdlet.ShouldProcess($link, "Create shortcut to $zedDest")) {
+        return
+    }
+    Write-Host "Creating Start menu shortcut $link"
+    $shell = New-Object -ComObject WScript.Shell
+    $shortcut = $shell.CreateShortcut($link)
+    $shortcut.TargetPath = $zedDest
+    $shortcut.WorkingDirectory = $InstallDir
+    $shortcut.Save()
 }
 
 function Invoke-ZedDeployBuild {
@@ -325,20 +280,16 @@ Set-Location $repoRoot
 Initialize-ZedCargoPath
 
 if (-not $Force -and -not (Test-ZedInstallLayout -Dir $InstallDir)) {
-    throw "No Zed install found at $InstallDir (missing Zed.exe). Pass -Force to overlay anyway, or -InstallDir to choose another folder."
+    throw "$InstallDir is not empty and has no synth-code.exe. Pass -Force to deploy anyway, or -InstallDir to choose another folder."
 }
 
-$doBackup = -not $NoBackup -and ($Backup -or -not (Test-Path -LiteralPath $backupDir))
-$doPin = -not $NoPinWinget -and ($PinWinget -or (Test-ZedWingetInstalled))
-
-Write-Host "Deploy overlay"
+Write-Host "Deploy"
 Write-Host "  channel:     $Channel"
 Write-Host "  architecture: $Architecture"
 Write-Host "  install dir: $InstallDir"
 Write-Host "  build:       $shouldBuild"
 Write-Host "  jobs:        $(if ($Jobs -gt 0) { $Jobs } else { 2 })"
-Write-Host "  backup:      $doBackup"
-Write-Host "  pin winget:  $doPin"
+Write-Host "  shortcut:    $(-not $NoShortcut)"
 Write-Host "  launch:      $Launch"
 
 $whatIf = [bool]$WhatIfPreference
@@ -353,13 +304,13 @@ if ($shouldBuild) {
 }
 
 $outDir = Get-ZedReleaseOutDir
-$zedSrc = Join-Path $outDir "zed.exe"
+$zedSrc = Join-Path $outDir "synth-code.exe"
 $cliSrc = Join-Path $outDir "cli.exe"
 $helperSrc = Join-Path $outDir "auto_update_helper.exe"
 
 $missing = @()
 foreach ($pair in @(
-        @{ Name = "zed.exe"; Path = $zedSrc },
+        @{ Name = "synth-code.exe"; Path = $zedSrc },
         @{ Name = "cli.exe"; Path = $cliSrc },
         @{ Name = "auto_update_helper.exe"; Path = $helperSrc }
     )) {
@@ -382,10 +333,6 @@ Write-Host "  $zedSrc -> $zedDest"
 Write-Host "  $cliSrc -> $cliDest"
 Write-Host "  $helperSrc -> $helperDest"
 
-if ($doBackup) {
-    Copy-ZedInstallBackup -Source $InstallDir -Destination $backupDir
-}
-
 Stop-ZedProcesses
 if (-not $whatIf) {
     Wait-ZedInstallUnlocked -Paths @($zedDest, $cliDest, $helperDest)
@@ -394,9 +341,10 @@ if (-not $whatIf) {
 Copy-ZedFileWithRetry -Source $zedSrc -Destination $zedDest
 Copy-ZedFileWithRetry -Source $cliSrc -Destination $cliDest
 Copy-ZedFileWithRetry -Source $helperSrc -Destination $helperDest
+Copy-ZedRuntimeFiles
 
-if ($doPin) {
-    Add-ZedWingetPin
+if (-not $NoShortcut) {
+    New-ZedStartMenuShortcut
 }
 
 if (-not $whatIf -and (Test-Path -LiteralPath $zedDest)) {

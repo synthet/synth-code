@@ -637,7 +637,7 @@ impl Telemetry {
     }
 
     pub async fn flush_events_inner(self: &Arc<Self>) -> Result<()> {
-        // Synth Zed: never POST telemetry to api.zed.dev. Still drain the queue
+        // Synth Code: never POST telemetry to api.zed.dev. Still drain the queue
         // and optionally write to the local telemetry log.
         let mut state = self.state.lock();
         state.first_event_date_time = None;

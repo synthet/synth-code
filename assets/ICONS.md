@@ -2,8 +2,8 @@
 
 Visual inventory of icons in this checkout. **Shipped Zed app icons** under
 `crates/zed/resources/` are rendered from the vector masters in
-`assets/branding/jetbrains-darcula-concepts/` — a flat `#101014` plate with a
-silver mark (regenerate with
+`assets/branding/jetbrains-darcula-concepts/` — a flat `#101014` plate with the
+Synth Code window mark (regenerate with
 `uv run --with pillow python script/apply_branding_icons.py --zed-only`).
 Validate all Windows icon sizes with
 `uv run --with pillow python script/apply_branding_icons.py --check`.
@@ -19,7 +19,7 @@ The two PNGs below are generated previews, not sources.
 
 <table>
 <tr>
-<td align="center"><img src="branding/synth-zed-app-icon.png" width="160"><br><b>Synth Zed</b></td>
+<td align="center"><img src="branding/synth-zed-app-icon.png" width="160"><br><b>Synth Code</b></td>
 <td align="center"><img src="branding/synth-warp-app-icon.png" width="160"><br><b>Synth Warp</b></td>
 </tr>
 </table>
@@ -52,9 +52,10 @@ Paths are under `crates/zed/resources/`. Wired from `crates/zed/Cargo.toml` (`pa
 | `images/zed_logo.svg` | <span style="display:inline-block;background:#fff;padding:8px;border-radius:4px"><img src="images/zed_logo.svg" alt="zed_logo" width="64"></span> |
 | `images/zed_x_copilot.svg` | <span style="display:inline-block;background:#fff;padding:8px;border-radius:4px"><img src="images/zed_x_copilot.svg" alt="zed_x_copilot" width="64"></span> |
 
-`images/zed_logo.svg` is the Zed logomark from https://zed.dev/brand (96×96). It is both the
-in-product mark and the glyph the OS app icons are built from — the branding masters place this
-exact path on the Synth plate rather than redrawing it.
+`images/zed_logo.svg` is the Synth Code in-product mark (96×96): the window mark (a rounded frame
+around `</>`) in one colour. The file name is kept because `VectorName::ZedLogo` resolves to it. The
+OS app icons use the same geometry on the near-black plate, drawn in the branding masters. Neither
+uses the Zed logomark.
 
 ## UI icons
 

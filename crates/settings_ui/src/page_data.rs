@@ -407,7 +407,7 @@ fn general_page(cx: &App) -> SettingsPage {
             SettingsPageItem::SectionHeader("Privacy"),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "Telemetry Diagnostics",
-                description: "Disabled in Synth Zed.",
+                description: "Disabled in Synth Code.",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("telemetry.diagnostics"),
@@ -429,7 +429,7 @@ fn general_page(cx: &App) -> SettingsPage {
             }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "Telemetry Metrics",
-                description: "Disabled in Synth Zed.",
+                description: "Disabled in Synth Code.",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("telemetry.metrics"),
@@ -479,8 +479,8 @@ fn general_page(cx: &App) -> SettingsPage {
             security_section(),
             workspace_restoration_section(),
             scoped_settings_section(),
-            // Synth Zed: telemetry privacy toggles removed (sinks disabled).
-            // Synth Zed: auto-update toggle removed (no update server; never polls).
+            // Synth Code: telemetry privacy toggles removed (sinks disabled).
+            // Synth Code: auto-update toggle removed (no update server; never polls).
         )
         .into(),
     }

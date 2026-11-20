@@ -241,7 +241,7 @@ async fn unmount_disk_image(mount_path: &Path) {
     }
 }
 
-// Synth Zed fork: still registered so `auto_update` parses, but never read
+// Synth Code fork: still registered so `auto_update` parses, but never read
 // outside tests because polling is never started (see `init`).
 #[allow(dead_code)]
 #[derive(Clone, Copy, Debug, RegisterSetting)]
@@ -271,7 +271,7 @@ pub fn init(client: Arc<Client>, cx: &mut App) {
     })
     .detach();
 
-    // Synth Zed fork: never poll for updates. The update feed is cloud.zed.dev, which serves
+    // Synth Code fork: never poll for updates. The update feed is cloud.zed.dev, which serves
     // upstream Zed builds (installing one would replace this fork), so the updater entity is
     // kept only for its status and the remote-server cache, and polling is never started.
     let version = release_channel::AppVersion::global(cx);
@@ -294,10 +294,10 @@ pub fn check(_: &Check, window: &mut Window, cx: &mut App) {
         return;
     }
 
-    // Synth Zed fork: there is no update server to check against.
+    // Synth Code fork: there is no update server to check against.
     drop(window.prompt(
         gpui::PromptLevel::Info,
-        "Synth Zed does not check for updates.",
+        "Synth Code does not check for updates.",
         Some(&format!(
             "There is no update server. Install new builds from {FORK_RELEASES_URL}."
         )),
@@ -306,7 +306,7 @@ pub fn check(_: &Check, window: &mut Window, cx: &mut App) {
     ));
 }
 
-/// Synth Zed fork: release notes live with the fork's releases, not on zed.dev.
+/// Synth Code fork: release notes live with the fork's releases, not on zed.dev.
 const FORK_RELEASES_URL: &str = "https://github.com/synthet/zed/releases";
 
 pub fn release_notes_url(cx: &mut App) -> Option<String> {
@@ -525,7 +525,7 @@ impl AutoUpdater {
     // you can override this function. You should also update get_remote_server_release_url to return
     // Ok(None).
     //
-    // Synth Zed fork: remote servers are never downloaded from cloud.zed.dev (upstream binaries
+    // Synth Code fork: remote servers are never downloaded from cloud.zed.dev (upstream binaries
     // do not match this fork's build). Instead the archive for the target platform is read from
     // the local cache, `<remote_servers_dir>/<channel>/<os>-<arch>/<version>.gz`, where a
     // packager or the user places the `zed-remote-server` archive produced by this fork's build.
@@ -565,7 +565,7 @@ impl AutoUpdater {
         Ok(version_path)
     }
 
-    /// Synth Zed fork: never ask the remote host to download a server from cloud.zed.dev.
+    /// Synth Code fork: never ask the remote host to download a server from cloud.zed.dev.
     pub async fn get_remote_server_release_url(
         _channel: ReleaseChannel,
         _version: Option<Version>,
