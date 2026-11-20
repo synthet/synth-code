@@ -9,29 +9,31 @@ archive_match="zed(-[a-zA-Z0-9]+)?-linux-$(uname -m)\.tar\.gz"
 archive=$(ls "target/release" | grep -E ${archive_match})
 channel=$(<crates/zed/RELEASE_CHANNEL)
 
+# APP_ID must match ReleaseChannel::app_id() and script/bundle-linux, and the
+# FLATPAK_ID prefix the CLI checks (crates/cli/src/main.rs).
 export CHANNEL="$channel"
 export ARCHIVE="$archive"
 if [[ "$channel" == "dev" ]]; then
-    export APP_ID="dev.zed.ZedDev"
-    export APP_NAME="Zed Devel"
+    export APP_ID="io.github.synthet.code-dev"
+    export APP_NAME="Synth Code Dev"
     export BRANDING_LIGHT="#99c1f1"
     export BRANDING_DARK="#1a5fb4"
     export ICON_FILE="app-icon-dev"
 elif [[ "$channel" == "nightly" ]]; then
-    export APP_ID="dev.zed.ZedNightly"
-    export APP_NAME="Zed Nightly"
+    export APP_ID="io.github.synthet.code-nightly"
+    export APP_NAME="Synth Code Nightly"
     export BRANDING_LIGHT="#e9aa6a"
     export BRANDING_DARK="#1a5fb4"
     export ICON_FILE="app-icon-nightly"
 elif [[ "$channel" == "preview" ]]; then
-    export APP_ID="dev.zed.ZedPreview"
-    export APP_NAME="Zed Preview"
+    export APP_ID="io.github.synthet.code-preview"
+    export APP_NAME="Synth Code Preview"
     export BRANDING_LIGHT="#99c1f1"
     export BRANDING_DARK="#1a5fb4"
     export ICON_FILE="app-icon-preview"
 elif [[ "$channel" == "stable" ]]; then
-    export APP_ID="dev.zed.Zed"
-    export APP_NAME="Zed"
+    export APP_ID="io.github.synthet.code"
+    export APP_NAME="Synth Code"
     export BRANDING_LIGHT="#99c1f1"
     export BRANDING_DARK="#1a5fb4"
     export ICON_FILE="app-icon"
