@@ -56,11 +56,12 @@ if ($Help) {
     exit 0
 }
 
-Push-Location -Path crates/zed
-$channel = Get-Content "RELEASE_CHANNEL"
+# Synth Code ships one channel, so bundles are stable unless ZED_RELEASE_CHANNEL
+# overrides it. crates/zed/RELEASE_CHANNEL stays "dev" so that `cargo run` keeps its
+# own data, credentials and instance lock.
+$channel = if ($env:ZED_RELEASE_CHANNEL) { $env:ZED_RELEASE_CHANNEL } else { "stable" }
 $env:ZED_RELEASE_CHANNEL = $channel
 $env:RELEASE_CHANNEL = $channel
-Pop-Location
 
 function CheckEnvironmentVariables {
     if(-not $env:CI) {
@@ -298,7 +299,7 @@ function BuildInstaller {
     $issFilePath = "$innoDir\zed.iss"
     switch ($channel) {
         "stable" {
-            $appId = "{{9DBAA78F-FAFF-45F4-828C-D5D50B664167}"
+            $appId = "{{9643A47E-3FC1-44C0-8B73-8B8145952726}"
             $appIconName = "app-icon"
             $appName = "SynthCode"
             $appDisplayName = "Synth Code"

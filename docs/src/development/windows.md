@@ -167,6 +167,11 @@ launch it moves any `SynthZed` folders from earlier builds there. It
 doesn't add `bin` to `PATH` or register file associations; the installer
 built by `script/bundle-windows.ps1` does.
 
+Both `script/deploy-windows.ps1` and the standalone installer script
+`script/bundle-windows.ps1` build the stable channel by default. Pass
+`-Channel` to the deploy script, or set `ZED_RELEASE_CHANNEL` for the
+installer script, to override it.
+
 ## Installing from msys2
 
 Zed does not support unofficial MSYS2 Zed packages built for Mingw-w64. Please report any issues you may have with [mingw-w64-zed](https://packages.msys2.org/base/mingw-w64-zed) to [msys2/MINGW-packages/issues](https://github.com/msys2/MINGW-packages/issues?q=is%3Aissue+is%3Aopen+zed).

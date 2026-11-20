@@ -56,20 +56,20 @@
         <desktop4:Extension Category="windows.fileExplorerContextMenus">
           <desktop4:FileExplorerContextMenus>
             <desktop5:ItemType Type="Directory">
-              <desktop5:Verb Id="OpenWithZed" Clsid="e6711386-4898-4065-ab06-b532b1942e56" />
+              <desktop5:Verb Id="OpenWithZed" Clsid="03862157-7318-44ac-9c57-7bcce0af76ad" />
             </desktop5:ItemType>
             <desktop5:ItemType Type="Directory\Background">
-              <desktop5:Verb Id="OpenWithZed" Clsid="e6711386-4898-4065-ab06-b532b1942e56" />
+              <desktop5:Verb Id="OpenWithZed" Clsid="03862157-7318-44ac-9c57-7bcce0af76ad" />
             </desktop5:ItemType>
             <desktop5:ItemType Type="*">
-              <desktop5:Verb Id="OpenWithZed" Clsid="e6711386-4898-4065-ab06-b532b1942e56" />
+              <desktop5:Verb Id="OpenWithZed" Clsid="03862157-7318-44ac-9c57-7bcce0af76ad" />
             </desktop5:ItemType>
           </desktop4:FileExplorerContextMenus>
         </desktop4:Extension>
         <com:Extension Category="windows.comServer">
           <com:ComServer>
             <com:SurrogateServer DisplayName="Synth Code">
-              <com:Class Id="e6711386-4898-4065-ab06-b532b1942e56" Path="zed_explorer_command_injector.dll" ThreadingModel="STA"/>
+              <com:Class Id="03862157-7318-44ac-9c57-7bcce0af76ad" Path="zed_explorer_command_injector.dll" ThreadingModel="STA"/>
             </com:SurrogateServer>
           </com:ComServer>
         </com:Extension>

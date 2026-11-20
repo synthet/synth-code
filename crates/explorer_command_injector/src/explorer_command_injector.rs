@@ -128,7 +128,7 @@ impl IClassFactory_Impl for ExplorerCommandInjectorFactory_Impl {
 }
 
 #[cfg(all(feature = "stable", not(feature = "preview"), not(feature = "nightly")))]
-const MODULE_ID: GUID = GUID::from_u128(0xe6711386_4898_4065_ab06_b532b1942e56);
+const MODULE_ID: GUID = GUID::from_u128(0x03862157_7318_44ac_9c57_7bcce0af76ad);
 #[cfg(all(feature = "preview", not(feature = "stable"), not(feature = "nightly")))]
 const MODULE_ID: GUID = GUID::from_u128(0x722171d8_47e2_4d9a_bea7_8c02e87e2895);
 #[cfg(all(feature = "nightly", not(feature = "stable"), not(feature = "preview")))]
