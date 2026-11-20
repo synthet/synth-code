@@ -159,7 +159,7 @@ pub use workspace_settings::{
     RestoreOnStartupBehavior, StatusBarSettings, TabBarSettings, WorkspaceSettings,
     observe_accessible_mode,
 };
-use zed_actions::{Spawn, feedback::FileBugReport, theme::ToggleMode};
+use zed_actions::{Spawn, theme::ToggleMode};
 
 use crate::{dock::PanelSizeState, item::ItemBufferKind, notifications::NotificationId};
 use crate::{
@@ -8897,12 +8897,9 @@ fn notify_if_database_failed(window: WindowHandle<MultiWorkspace>, cx: &mut Asyn
                         cx,
                         |cx| {
                             cx.new(|cx| {
+                                // Synth Code fork: no "File an Issue" button, since the fork
+                                // has no issue tracker to send it to.
                                 MessageNotification::new("Failed to load the database file.", cx)
-                                    .primary_message("File an Issue")
-                                    .primary_icon(IconName::Plus)
-                                    .primary_on_click(|window, cx| {
-                                        window.dispatch_action(Box::new(FileBugReport), cx)
-                                    })
                             })
                         },
                     );
