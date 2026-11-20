@@ -29,7 +29,7 @@ const fn eq_ignoring_case_and_hyphens(a: &[u8], b: &[u8]) -> bool {
         if i == a.len() || j == b.len() {
             return i == a.len() && j == b.len();
         }
-        if a[i].to_ascii_lowercase() != b[j].to_ascii_lowercase() {
+        if !a[i].eq_ignore_ascii_case(&b[j]) {
             return false;
         }
         i += 1;

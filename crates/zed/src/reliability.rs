@@ -19,16 +19,13 @@ pub fn init(client: Arc<Client>, workspace_store: Entity<WorkspaceStore>, cx: &m
     hang_detection::start(client.clone(), cx);
     start_memory_usage_logging(workspace_store, cx);
 
-    cx.on_flags_ready({
-        let client = client.clone();
-        move |flags_ready, cx| {
-            if flags_ready.is_staff {
-                let client = client.clone();
-                cx.background_spawn(async move {
-                    upload_build_timings(client).await.warn_on_err();
-                })
-                .detach();
-            }
+    cx.on_flags_ready(move |flags_ready, cx| {
+        if flags_ready.is_staff {
+            let client = client.clone();
+            cx.background_spawn(async move {
+                upload_build_timings(client).await.warn_on_err();
+            })
+            .detach();
         }
     })
     .detach();
