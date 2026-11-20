@@ -1,4 +1,4 @@
-# Agent infrastructure inventory — Synth Zed
+# Agent infrastructure inventory — Synth Code
 
 **Last reviewed:** 2026-07-10. Machine-readable mirror: [`AGENT_INFRA_STATUS.json`](AGENT_INFRA_STATUS.json).
 

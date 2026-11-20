@@ -1,4 +1,4 @@
-# Project guide — how agents navigate Synth Zed
+# Project guide — how agents navigate Synth Code
 
 A fast orientation for AI agents. Read this, then the canonical sources it points to.
 

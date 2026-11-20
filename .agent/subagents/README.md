@@ -1,4 +1,4 @@
-# Subagents and logical roles — Synth Zed
+# Subagents and logical roles — Synth Code
 
 Concrete subagent definitions live in [`.claude/agents/`](../../.claude/agents/) (mirrored to
 `.cursor/agents/`). This file maps **logical roles** (for planning) to those files and to the

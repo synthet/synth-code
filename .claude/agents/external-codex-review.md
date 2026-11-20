@@ -1,6 +1,6 @@
 ---
 name: external-codex-review
-description: Use Codex through the subagent-orchestrator MCP server for review-only external CLI feedback in Synth Zed.
+description: Use Codex through the subagent-orchestrator MCP server for review-only external CLI feedback in Synth Code.
 capability: "external-codex-review agent asset workflow"
 side_effect_level: external_export
 approval_required: true

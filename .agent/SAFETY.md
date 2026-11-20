@@ -1,4 +1,4 @@
-# Agent safety and hygiene — Synth Zed
+# Agent safety and hygiene — Synth Code
 
 ## Secrets and credentials
 

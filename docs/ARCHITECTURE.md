@@ -1,7 +1,7 @@
 ---
 type: Documentation Hub
 title: Architecture
-description: Where to look for Synth Zed system overview, crates, and fork deltas.
+description: Where to look for Synth Code system overview, crates, and fork deltas.
 resource: ARCHITECTURE.md
 tags: [docs, architecture, hub]
 timestamp: 2026-08-15T17:45:00Z

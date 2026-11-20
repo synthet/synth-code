@@ -1,6 +1,6 @@
 ---
 name: external-cli-reviewer
-description: Coordinate review-only Codex and Gemini runs through subagent-orchestrator MCP for Synth Zed, including sequential panel-style comparisons.
+description: Coordinate review-only Codex and Gemini runs through subagent-orchestrator MCP for Synth Code, including sequential panel-style comparisons.
 capability: "external-cli-reviewer agent asset workflow"
 side_effect_level: external_export
 approval_required: true

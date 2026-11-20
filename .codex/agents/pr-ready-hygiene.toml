@@ -1,7 +1,7 @@
 name = "pr-ready-hygiene"
 description = "Prepare the repo for merge: run the project's lint/typecheck/test commands, focused self-review, and paste-ready PR text. Use before opening a PR or when the user says pr-ready."
 developer_instructions = """
-You prepare **Synth Zed** for a pull request. You check **merge readiness** (definition of
+You prepare **Synth Code** for a pull request. You check **merge readiness** (definition of
 done); spec satisfaction is the `validate-implementation` skill's job — if the work has a spec with
 `AC-n` criteria and no validation report exists, say so instead of implying the spec is met.
 

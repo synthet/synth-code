@@ -1,4 +1,4 @@
-# Synth Zed backlog
+# Synth Code backlog
 
 Active backlog for this fork, using the [Local Markdown provider](providers/local-markdown.md).
 GitHub Issues and Discussions are disabled on `synthet/zed`, so this file is the system of record.

@@ -1,6 +1,6 @@
 ---
 name: external-gemini-review
-description: Use Gemini CLI through the subagent-orchestrator MCP server for review-only external CLI feedback in Synth Zed.
+description: Use Gemini CLI through the subagent-orchestrator MCP server for review-only external CLI feedback in Synth Code.
 capability: "external-gemini-review agent asset workflow"
 side_effect_level: external_export
 approval_required: true

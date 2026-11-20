@@ -1,7 +1,7 @@
 ---
 type: Documentation Index
 title: Documentation Index
-description: LLM wiki hub for Synth Zed. mdBook product docs live under src/.
+description: LLM wiki hub for Synth Code. mdBook product docs live under src/.
 resource: INDEX.md
 tags: [docs, index, wiki]
 timestamp: 2026-08-15T17:45:00Z

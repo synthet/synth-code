@@ -1,7 +1,7 @@
 ---
 type: Technical Reference
 title: Agent Instruction Files
-description: How Synth Zed splits Zed Agent .rules from Cursor/Claude guides after synthet-code-framework adopt.
+description: How Synth Code splits Zed Agent .rules from Cursor/Claude guides after synthet-code-framework adopt.
 resource: technical/agent-instruction-files.md
 tags: [docs, agents, adopt, rules]
 timestamp: 2026-08-15T17:00:00Z

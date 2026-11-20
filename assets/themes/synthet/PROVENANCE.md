@@ -123,5 +123,5 @@ the alpha One Dark uses. `hint` reuses the `info` colour. No source colour chang
 - **Warp referral themes** (`received-referral-reward`, `sent-referral-reward`) — Warp product
   marketing rather than editor themes.
 
-The generated Zed JSON implementations are distributed as part of this Synth Zed fork under the
+The generated Zed JSON implementations are distributed as part of this Synth Code fork under the
 repository's licensing terms, subject to the upstream notices in [`../LICENSES`](../LICENSES).

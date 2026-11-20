@@ -1,4 +1,4 @@
-# Skill inventory — Synth Zed
+# Skill inventory — Synth Code
 
 **Last reviewed:** 2026-08-15. Companion to [SKILL_CHANGE_AST10_REVIEW.md](SKILL_CHANGE_AST10_REVIEW.md)
 and [SKILL_COMPILATION.md](SKILL_COMPILATION.md).
@@ -53,7 +53,7 @@ commands or edit code/config as part of its procedure.
 | windows-agent-tooling | Native Windows agent workflows | L2 | 2026-07-03 |
 | wsl2-agent-tooling | WSL2 build/test/MCP workflows | L2 | 2026-07-03 |
 
-### Synth Zed domain
+### Synth Code domain
 
 | Skill | Purpose | Risk | Last reviewed |
 |-------|---------|------|---------------|

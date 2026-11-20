@@ -1,4 +1,4 @@
-# Infra quickstart — Synth Zed
+# Infra quickstart — Synth Code
 
 One page: what to run, what's safe, and what never to touch.
 
