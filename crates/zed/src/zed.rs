@@ -1672,7 +1672,7 @@ fn open_about_window(cx: &mut App) {
                             )
                             .child(
                                 // Matches the copyright line on Synth Term's About page.
-                                Label::new("© Zed Industries, Inc. and Synth Code contributors")
+                                Label::new("© 2022-2025 Zed Industries, Inc. and Synth Code contributors")
                                     .color(Color::Muted)
                                     .size(LabelSize::XSmall),
                             )
