@@ -236,27 +236,7 @@ pub fn init(cx: &mut App) {
     }
 
     cx.on_action(|_: &zed_actions::OpenLicenses, cx| {
-        with_active_or_new_workspace(cx, |workspace, window, cx| {
-            // Builds that skip script/generate-licenses (for example a local
-            // deploy) have no licenses.md; show a note instead of panicking.
-            let licenses = gpui::AssetSource::load(&Assets, "licenses.md")
-                .ok()
-                .flatten()
-                .map(|data| Cow::Owned(String::from_utf8_lossy(&data).into_owned()))
-                .unwrap_or(Cow::Borrowed(
-                    "# Dependency licenses\n\nThis build was made without the generated license list. \
-                     Run `script/generate-licenses` before building, or see \
-                     <https://github.com/synthet/zed>.\n",
-                ));
-            open_bundled_file(
-                workspace,
-                licenses,
-                "Open Source License Attribution",
-                "Markdown",
-                window,
-                cx,
-            );
-        });
+        with_active_or_new_workspace(cx, open_licenses);
     })
     .on_action(|&zed_actions::OpenKeymapFile, cx| {
         with_active_or_new_workspace(cx, |_, window, cx| {
@@ -1526,6 +1506,52 @@ fn initialize_pane(
     });
 }
 
+fn open_licenses(workspace: &mut Workspace, window: &mut Window, cx: &mut Context<Workspace>) {
+    // Builds that skip script/generate-licenses (for example a local
+    // deploy) have no licenses.md; show a note instead of panicking.
+    let licenses = gpui::AssetSource::load(&Assets, "licenses.md")
+        .ok()
+        .flatten()
+        .map(|data| Cow::Owned(String::from_utf8_lossy(&data).into_owned()))
+        .unwrap_or(Cow::Borrowed(
+            "# Dependency licenses\n\nThis build was made without the generated license list. \
+             Run `script/generate-licenses` before building, or see \
+             <https://github.com/synthet/zed>.\n",
+        ));
+    open_bundled_file(
+        workspace,
+        licenses,
+        "Open Source License Attribution",
+        "Markdown",
+        window,
+        cx,
+    );
+}
+
+/// Opens the dependency licenses from the About window. Dispatching
+/// `OpenLicenses` from the About window's own click handler targets that
+/// window, which can't be updated while it handles the click, so the action
+/// was dropped. Open them in the frontmost workspace window instead.
+fn open_licenses_from_about(cx: &mut App) {
+    let workspace_window = cx
+        .window_stack()
+        .unwrap_or_else(|| cx.windows())
+        .into_iter()
+        .find_map(|window| window.downcast::<MultiWorkspace>());
+    match workspace_window {
+        Some(workspace_window) => {
+            workspace_window
+                .update(cx, |multi_workspace, window, cx| {
+                    window.activate_window();
+                    let workspace = multi_workspace.workspace().clone();
+                    workspace.update(cx, |workspace, cx| open_licenses(workspace, window, cx));
+                })
+                .log_err();
+        }
+        None => with_active_or_new_workspace(cx, open_licenses),
+    }
+}
+
 const SYNTH_CODE_GPL_URL: &str = "https://github.com/synthet/zed/blob/main/LICENSE-GPL";
 const SYNTH_CODE_APACHE_URL: &str = "https://github.com/synthet/zed/blob/main/LICENSE-APACHE";
 
@@ -1675,8 +1701,8 @@ fn open_about_window(cx: &mut App) {
                                     .style(ButtonStyle::Subtle)
                                     .label_size(LabelSize::Small)
                                     .on_click(|_, window, cx| {
-                                        cx.dispatch_action(&zed_actions::OpenLicenses);
                                         window.remove_window();
+                                        cx.defer(open_licenses_from_about);
                                     }),
                             ),
                     )
