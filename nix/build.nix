@@ -371,11 +371,11 @@ craneLib.buildPackage (
             export DO_STARTUP_NOTIFY="true"
             export APP_CLI="scode"
             export APP_ICON="zed"
-            export APP_NAME="Zed Nightly"
+            export APP_NAME="Synth Code Nightly"
             export APP_ARGS="%U"
             mkdir -p "$out/share/applications"
-            ${lib.getExe envsubst} < "crates/zed/resources/zed.desktop.in" > "$out/share/applications/dev.zed.Zed-Nightly.desktop"
-            chmod +x "$out/share/applications/dev.zed.Zed-Nightly.desktop"
+            ${lib.getExe envsubst} < "crates/zed/resources/zed.desktop.in" > "$out/share/applications/io.github.synthet.code-nightly.desktop"
+            chmod +x "$out/share/applications/io.github.synthet.code-nightly.desktop"
           )
 
           runHook postInstall
