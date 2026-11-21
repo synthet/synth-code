@@ -1,18 +1,23 @@
 # Changelog
 
-All notable changes to Synth Zed are recorded here. The format follows
+All notable changes to Synth Code are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-Synth Zed carries two versions:
+Synth Code carries two versions:
 
 - **Fork version** — [`VERSION`](VERSION). It follows [Semantic Versioning](https://semver.org/)
-  and increments with each Synth Zed release.
+  and increments with each Synth Code release.
 - **Upstream version** — `version` in [`crates/zed/Cargo.toml`](crates/zed/Cargo.toml). It always
   matches the upstream Zed release the fork is based on and is never bumped by the fork.
 
 Each release lists the upstream base it was built on.
 
 ## [Unreleased]
+
+### Changed
+
+- Help > Documentation is now labelled "Zed Documentation", because it opens upstream Zed's
+  docs; Synth Code has no documentation site of its own.
 
 ### Fixed
 

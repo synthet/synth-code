@@ -295,7 +295,7 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
                 MenuItem::action("Show Welcome", onboarding::ShowWelcome),
                 MenuItem::separator(),
                 MenuItem::action(
-                    "Documentation",
+                    "Zed Documentation",
                     super::OpenBrowser {
                         url: "https://zed.dev/docs".into(),
                     },
