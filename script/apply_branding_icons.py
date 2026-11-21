@@ -1,4 +1,8 @@
-"""Generate and apply Synth branding PNG/ICO assets from the vector masters."""
+"""Generate and apply Synth Code's branding PNG/ICO assets from the vector masters.
+
+Synth Term's icons are generated in its own repository (synthet/warp,
+assets/branding/synth-term/), so this script reads and writes this checkout only.
+"""
 
 from __future__ import annotations
 
@@ -14,7 +18,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ROOT / "assets" / "branding" / "jetbrains-darcula-concepts"
-ZED_PREVIEW = ROOT / "assets" / "branding" / "synth-zed-app-icon.png"
+ZED_PREVIEW = ROOT / "assets" / "branding" / "synth-code-app-icon.png"
 
 ZED_SUFFIXES = ("", "-preview", "-nightly", "-dev")
 ZED_ICO_SIZES = (16, 24, 32, 48, 64, 128, 256)
@@ -254,13 +258,12 @@ def main() -> None:
         action="store_true",
         help="verify generated icons without modifying files",
     )
-    # Synth Term renders its own icons (script/apply_branding_icons.py in the warp
-    # checkout, masters in assets/branding/synth-term/). This script used to write the
-    # retired two-panel mark into that checkout; --zed-only is kept as a no-op.
+    # Kept so existing commands keep working; the script no longer touches
+    # any other checkout.
     parser.add_argument(
         "--zed-only",
         action="store_true",
-        help="no-op; this script only updates Zed icons",
+        help="accepted for compatibility; only this checkout is ever updated",
     )
     args = parser.parse_args()
 

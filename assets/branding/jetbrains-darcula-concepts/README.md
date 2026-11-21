@@ -1,7 +1,9 @@
-# Synth fork icon sources — Zed + Warp
+# Synth Code icon sources
 
-The vector masters that every shipped app icon is rendered from, for both this
-checkout and the sibling `../warp` checkout. Started from the JetBrains Darcula
+The vector masters that every shipped Synth Code app icon is rendered from. Synth Term's
+icons, an original terminal-window mark, live in its own repository (synthet/warp,
+`assets/branding/synth-term/`); the `warp-*` files here are its retired two-panel mark,
+kept only for the comparison sheet. Started from the JetBrains Darcula
 concepts explored in https://github.com/synthet/zed/pull/3; the marks survived
 that exploration, the plate did not.
 
@@ -36,9 +38,9 @@ The plate and the mark stay identical across all four.
 | App | macOS | Windows |
 | --- | --- | --- |
 | Synth Code | [SVG](zed-macos.svg) / [PNG](zed-macos.png) | [SVG](zed-windows.svg) / [PNG](zed-windows.png) |
-| Warp | [SVG](warp-macos.svg) / [PNG](warp-macos.png) | [SVG](warp-windows.svg) / [PNG](warp-windows.png) |
+| Warp (retired) | [SVG](warp-macos.svg) / [PNG](warp-macos.png) | [SVG](warp-windows.svg) / [PNG](warp-windows.png) |
 
-Synth Code is the window mark; Warp (Synth Term) is the two-panel mark. They stay
+Synth Code is the window mark; the retired Warp mark is the two-panel mark. They stay
 distinguishable in grayscale and at 16 px, so colour is never the differentiator.
 
 The window mark is a rounded frame (204..820 by 256..768, 72 units thick, outer
@@ -70,16 +72,12 @@ edges land on whole pixels.
 
 ## Regenerating
 
-Shipped Zed icons:
+Shipped Synth Code icons (the script never writes outside this checkout):
 
 ```sh
-uv run --with pillow python script/apply_branding_icons.py           # regenerate
+uv run --with pillow python script/apply_branding_icons.py
 uv run --with pillow python script/apply_branding_icons.py --check   # validate, no writes
 ```
-
-This script no longer writes into the sibling warp checkout. Synth Term renders its own icons from
-`assets/branding/synth-term/` with `script/apply_branding_icons.py` in that repository; the
-`warp-*.svg` files here are the retired two-panel concept, kept for the comparison sheet only.
 
 The comparison sheet and the 1024 px master PNGs:
 
@@ -99,9 +97,7 @@ and renders straight from vectors — `comparison-sheet.svg` is generated, so ed
 
 ## Still outstanding
 
-Icon Composer files, an `.icns`, and native OS validation on macOS. Warp's
-macOS `AppIcon.icon/` adaptive bundles and its DockTilePlugin variants are a
-separate icon system and are not produced here.
+Icon Composer files, an `.icns`, and native OS validation on macOS.
 
 The original raster exploration's prompts are kept in [prompts.json](prompts.json)
 as design history, not as a build input. The SVG geometry is a reconstruction of

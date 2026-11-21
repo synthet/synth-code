@@ -10,17 +10,16 @@ Validate all Windows icon sizes with
 Generation also requires ImageMagick 7's `magick` executable: Windows ICO entries
 below 256 px are BMP32, while the 256 px entry is embedded PNG.
 
-## Synth app icons (applied)
+## Synth Code app icon (applied)
 
-Matching Synth icons for Zed and Warp. Wired into Zed
-(`crates/zed/resources/`) and Warp (`app/channels/oss`, `warp-oss`, `local`).
-Vector masters and the design notes: `assets/branding/jetbrains-darcula-concepts/`.
-The two PNGs below are generated previews, not sources.
+Wired into `crates/zed/resources/`. Vector masters and the design notes:
+`assets/branding/jetbrains-darcula-concepts/`. The PNG below is a generated preview, not a
+source. Synth Term's icons live in its own repository (synthet/warp,
+`assets/branding/synth-term/`) and are not generated here.
 
 <table>
 <tr>
-<td align="center"><img src="branding/synth-zed-app-icon.png" width="160"><br><b>Synth Code</b></td>
-<td align="center"><img src="branding/synth-warp-app-icon.png" width="160"><br><b>Synth Warp</b></td>
+<td align="center"><img src="branding/synth-code-app-icon.png" width="160"><br><b>Synth Code</b></td>
 </tr>
 </table>
 
