@@ -13,16 +13,11 @@ import tempfile
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-WARP_ROOT = ROOT.parent / "warp"
 SOURCES = ROOT / "assets" / "branding" / "jetbrains-darcula-concepts"
 ZED_PREVIEW = ROOT / "assets" / "branding" / "synth-zed-app-icon.png"
-WARP_PREVIEW = ROOT / "assets" / "branding" / "synth-warp-app-icon.png"
 
 ZED_SUFFIXES = ("", "-preview", "-nightly", "-dev")
 ZED_ICO_SIZES = (16, 24, 32, 48, 64, 128, 256)
-WARP_ICO_SIZES = (16, 24, 32, 48, 64, 128, 256)
-WARP_PNG_SIZES = (16, 32, 48, 64, 128, 256, 512)
-WARP_CHANNELS = ("oss", "warp-oss", "local")
 
 # Release channels stay one family: same plate, same mark, glyph tint only.
 CHANNEL_TINTS = {
@@ -149,19 +144,6 @@ def check_zed() -> None:
     print(f"Verified Zed icons under {base}")
 
 
-def check_warp() -> None:
-    if not WARP_ROOT.is_dir():
-        print(f"Skipping Warp: {WARP_ROOT} not found")
-        return
-
-    for channel in WARP_CHANNELS:
-        out_dir = WARP_ROOT / "app" / "channels" / channel / "icon" / "no-padding"
-        check_ico(out_dir / "icon.ico", WARP_ICO_SIZES)
-        for size in WARP_PNG_SIZES:
-            check_png(out_dir / f"{size}x{size}.png")
-        print(f"Verified Warp {channel} icons under {out_dir}")
-
-
 def save_png(path: Path, image: Image.Image) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     image.save(path, format="PNG", optimize=True)
@@ -265,28 +247,6 @@ def apply_zed() -> None:
     print(f"Updated Zed icons under {base}")
 
 
-def apply_warp() -> None:
-    if not WARP_ROOT.is_dir():
-        print(f"Skipping Warp: {WARP_ROOT} not found")
-        return
-
-    save_png(WARP_PREVIEW, render_svg(SOURCES / "warp-macos.svg", 1024))
-
-    for channel in WARP_CHANNELS:
-        out_dir = WARP_ROOT / "app" / "channels" / channel / "icon" / "no-padding"
-        for size in WARP_PNG_SIZES:
-            save_png(
-                out_dir / f"{size}x{size}.png",
-                render_svg(source_for("warp", "macos", size), size),
-            )
-        frames = {
-            size: render_svg(source_for("warp", "windows", size), size)
-            for size in WARP_ICO_SIZES
-        }
-        save_ico(out_dir / "icon.ico", frames, WARP_ICO_SIZES)
-        print(f"Updated Warp {channel} icons under {out_dir}")
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -294,22 +254,21 @@ def main() -> None:
         action="store_true",
         help="verify generated icons without modifying files",
     )
+    # Synth Term renders its own icons (script/apply_branding_icons.py in the warp
+    # checkout, masters in assets/branding/synth-term/). This script used to write the
+    # retired two-panel mark into that checkout; --zed-only is kept as a no-op.
     parser.add_argument(
         "--zed-only",
         action="store_true",
-        help="update only this checkout's Zed icons",
+        help="no-op; this script only updates Zed icons",
     )
     args = parser.parse_args()
 
     if args.check:
         check_zed()
-        if not args.zed_only:
-            check_warp()
         return
 
     apply_zed()
-    if not args.zed_only:
-        apply_warp()
 
 
 if __name__ == "__main__":

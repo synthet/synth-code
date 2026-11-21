@@ -70,13 +70,16 @@ edges land on whole pixels.
 
 ## Regenerating
 
-Shipped icons for both checkouts:
+Shipped Zed icons:
 
 ```sh
-uv run --with pillow python script/apply_branding_icons.py           # Zed + Warp
-uv run --with pillow python script/apply_branding_icons.py --zed-only
+uv run --with pillow python script/apply_branding_icons.py           # regenerate
 uv run --with pillow python script/apply_branding_icons.py --check   # validate, no writes
 ```
+
+This script no longer writes into the sibling warp checkout. Synth Term renders its own icons from
+`assets/branding/synth-term/` with `script/apply_branding_icons.py` in that repository; the
+`warp-*.svg` files here are the retired two-panel concept, kept for the comparison sheet only.
 
 The comparison sheet and the 1024 px master PNGs:
 
