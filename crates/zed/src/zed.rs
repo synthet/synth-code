@@ -1671,6 +1671,12 @@ fn open_about_window(cx: &mut App) {
                                 .size(LabelSize::XSmall),
                             )
                             .child(
+                                // Matches the copyright line on Synth Term's About page.
+                                Label::new("© 2022-2025 Zed Industries, Inc. and Synth Code contributors")
+                                    .color(Color::Muted)
+                                    .size(LabelSize::XSmall),
+                            )
+                            .child(
                                 Button::new("dependency-licenses", "Dependency Licenses")
                                     .style(ButtonStyle::Subtle)
                                     .label_size(LabelSize::Small)
